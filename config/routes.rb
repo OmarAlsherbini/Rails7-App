@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :posts
+  resources :blogs
   get 'setup_proof/psql_test'
   get 'setup_proof/redis_test'
   get 'setup_proof/ruby_test'
