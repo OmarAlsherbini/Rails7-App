@@ -1,5 +1,6 @@
 <p style="color: green"><%= notice %></p>
 
+<%= turbo_frame_tag dom_id(@post) do %>
 <%= render @post %>
 
 <div>
@@ -8,3 +9,4 @@
 
   <%= button_to "Destroy this post", @post, method: :delete %>
 </div>
+<% end %>
