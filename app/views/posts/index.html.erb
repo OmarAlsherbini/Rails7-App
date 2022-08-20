@@ -1,0 +1,23 @@
+<p style="color: green"><%= notice %></p>
+
+<h1 class="absolute top-20 text-teal-500 font-bold text-xl">Posts</h1>
+
+<%= turbo_stream_from "posts" %>
+<%= turbo_frame_tag "posts" do %>
+<div id="posts" class="overflow-auto relative block w-full">
+  <% @posts.each do |post| %>
+    <div class="m-2 bg-teal-50 mb-5 border-2 p-2 border-teal-500 rounded-md">
+      <%= render post %>
+      <p class="text-sky-800">
+        <%= link_to "Show this post", post %>
+      </p>
+    </div>
+  <% end %>
+</div>
+<% end %>
+
+
+
+<div class="absolute top-20 left-1/2">
+  <%= link_to "New post", new_post_path, class: "text-sky-800" %>
+</div>

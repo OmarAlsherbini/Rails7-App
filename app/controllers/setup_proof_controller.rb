@@ -6,6 +6,7 @@ class SetupProofController < ApplicationController
   end
 
   def ruby_test
+    print "RUUUBYYYYY"
   end
 
   def turbo_test

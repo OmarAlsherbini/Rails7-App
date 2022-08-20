@@ -37,6 +37,7 @@ gem "jbuilder"
 gem "redis", "~> 4.0"
 gem 'redis-namespace'
 gem 'redis-rails'
+gem 'hiredis'
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
@@ -78,3 +79,5 @@ group :test do
   gem "selenium-webdriver"
   gem "webdrivers"
 end
+
+gem "tailwindcss-rails", "~> 2.0"
