@@ -5,6 +5,7 @@
 sudo apt update
 sudo apt-get update
 sudo apt install npm
+npm install --global yarn
 sudo apt install git
 ```
 
@@ -26,10 +27,12 @@ Type <your_username> and choose 'y' as superuser. <br/>
 createdb <your_username>
 psql
 ```
+Create a new role and password for the new user as follows:
 ```
 CREATE ROLE <your_username> LOGIN SUPERUSER PASSWORD '<your_password>'
 \q
 ```
+Exit to your main terminal:
 ```
 exit
 ```
@@ -64,14 +67,81 @@ database:
   username: <your_username>
   password: <your_password>
 ```
+Create and migrate the DB via:
+```
+rails db:create db:migrate
+```
+If, for whatever reason, this still gave you the following error:
+```
+ActiveRecord::DatabaseConnectionError: There is an issue connecting to your database with your username/password, username: <your_username>.
+```
+Then please double check  your created PostgreSQL user credentials and what you inserted in the rails credentials encrypted file. If everything frustratingly seems correct, then you might want to go back to your PostgreSQL and enter the following query:
+```
+ALTER USER <your_username> WITH PASSWORD '<your_password>';
+```
+Even if you use the exact same credentials you inserted before. Yes, I know that this doesn't make much sense, but I ran into the same issue and this solved it for me. It could be either a bug in PostgreSQL or rails or Linux... idk... but by then we should expect the creation and migration of the DB to go smoothly and the connection to the DB to be correctly established.
 
+## 7) Rails Startup
+To run the project, run:
+```
+rails s
+```
+If you want to run the project with JS console open, run:
+```
+./bin/dev
+```
+In case you encountered the following error while running the project:
 
+```
+ActionView::Template::Error (The asset "tailwind.css" is not present in the asset pipeline.
+```
+Or
+```
+ActionView::Template::Error (The asset "application.css" is not present in the asset pipeline.
+```
+Then perform the following commands to fix it:
+```
+gem install bundler
+bundle update --bundler
+bundle install
+bundle lock --add-platform x86_64-linux
+```
+And then:
+```
+./bin/dev
+```
+And in case you encountered the following error while running the project:
+```
+/bin/sh: 1: esbuild: not found
+```
+Then you can fix esbuild by running the following commands:
+```
+sudo apt install rollup
+./bin/rails javascript:install:rollup
+./bin/rails javascript:install:esbuild
+./bin/rails javascript:install:webpack
+```
+And then:
+```
+./bin/dev
+```
+## 8) Test the Posts App
+Head to ```http://127.0.0.1:3000/posts/```, styled by Tailwind CSS. <br/>
+There, you will see a random word popping out of the Redis cache every time you refresh with a second expiry. You can check the redis behavior by opening a new terminal in the same directory and running:
+```
+redis-cli monitor
+```
+In order to see posts, you can open another terminal in the same directory and run:
+```
+rails c
+```
+There, you can write the following command in the rails CLI:
+```
+Post.create(title:"Hello World!", body: "Body!", views:0) 
+```
+You can watch on the page that this post gets broadcasted immediately on the page, proving the functionality of Hotwire (TurboJs + StimulusJs built in Rails 7), it would also show in the terminal the Turbo cable... although at the moment you would need to refresh the page to get it styled with Tailwind CSS for newly created posts. You can open the PSQL DB rails_proj_development, and in the table "posts", you will see that a new post has been created, proving the functionalty of PSQL.  <br/>
 
-
-
-
-
-
+DONE!
 
 # README
 
@@ -100,7 +170,6 @@ Things you may want to cover:
 
 # Rails7-App
 With PostgreSQL, Redis, Hotwire Turbo.js, Stimulus.js, Tailwind CSS, Ruby 3.0
-Testing Ubuntu Rails credentials.yml.enc key: da943ac9c2bfa50d8f159bdffd2c0b52
-credentials.yml.enc key: 8a74e78f177c52b5e20a88215f4b1314
+
 
 
