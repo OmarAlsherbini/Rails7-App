@@ -1,0 +1,17 @@
+<div id="<%= dom_id app_year %>">
+  <p class="my-5">
+    <strong class="block font-medium mb-1">App calendar:</strong>
+    <%= app_year.app_calendar_id %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Yr:</strong>
+    <%= app_year.yr %>
+  </p>
+
+  <% if action_name != "show" %>
+    <%= link_to "Show this app year", app_year, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+    <%= link_to 'Edit this app year', edit_app_year_path(app_year), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
+    <hr class="mt-6">
+  <% end %>
+</div>

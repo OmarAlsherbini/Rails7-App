@@ -1,0 +1,2 @@
+module AppMonthsHelper
+end

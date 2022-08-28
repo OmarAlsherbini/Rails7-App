@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  app_calendar: one
+  yr: 1
+
+two:
+  app_calendar: two
+  yr: 1

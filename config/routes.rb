@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  resources :app_days
+  resources :app_months
+  resources :app_years
+  resources :app_calendars
   resources :posts
   resources :blogs
   get 'setup_proof/psql_test'
