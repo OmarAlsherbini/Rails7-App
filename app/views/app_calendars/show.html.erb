@@ -7,9 +7,16 @@
     <%= render @app_calendar %>
     <p>Calendar: <%= link_to @app_calendar.id, @app_calendar, class: "text-teal-700" %></p>
     <br/>
-    <% @app_calendar.app_years.each do |a_year| %>
-      <%= render a_year.yr %>
-   <%end %>
+    <p> Current Year: <%= link_to @current_year, @app_year, class: "text-teal-700" %> </p>
+    <br/>
+    <p> Next Year: <%= link_to @app_calendar.next_year, @app_year, class: "text-teal-700" %> </p>
+    <br/>
+    <p> Past Year: <%= link_to @app_calendar.past_year, @app_year, class: "text-teal-700" %> </p>
+    <%#
+    <% @app_calendar.app_year.each do |a_year| %>
+      <%# <%= a_year.inspect %>
+      <%# <%end %>
+
     <%= link_to 'Edit this app_calendar', edit_app_calendar_path(@app_calendar), class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
     <div class="inline-block ml-2">
       <%= button_to 'Destroy this app_calendar', app_calendar_path(@app_calendar), method: :delete, class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 font-medium" %>

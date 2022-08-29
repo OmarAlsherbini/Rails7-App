@@ -1,8 +1,12 @@
 Rails.application.routes.draw do
+  resources :test_children
+  resources :test_parents
   resources :app_days
-  resources :app_months
+  resources :app_months 
   resources :app_years
-  resources :app_calendars
+  resources :app_calendars do
+    get :app_year, on: :member
+  end
   resources :posts
   resources :blogs
   get 'setup_proof/psql_test'

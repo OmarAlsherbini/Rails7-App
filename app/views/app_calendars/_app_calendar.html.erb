@@ -1,6 +1,11 @@
 <div id="<%= dom_id app_calendar %>">
   <% if action_name != "show" %>
+  <br/>
     <p>Calendar: <%= link_to app_calendar.id, app_calendar, class: "text-teal-700" %></p>
+    <br/>
+    <p>Inspect: <%= @app_calendars.inspect %> </p>
+    
+    <br/>
     <%= link_to "Show this app calendar", app_calendar, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
     <%= link_to 'Edit this app calendar', edit_app_calendar_path(app_calendar), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
     <hr class="mt-6">

@@ -1,0 +1,8 @@
+<div id="<%= dom_id test_parent %>">
+  <% if action_name != "show" %>
+    <p>Parent: <%= link_to test_parent.id, test_parent, class: "text-teal-700" %></p>
+    <%= link_to "Show this test parent", test_parent, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+    <%= link_to 'Edit this test parent', edit_test_parent_path(test_parent), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
+    <hr class="mt-6">
+  <% end %>
+</div>
