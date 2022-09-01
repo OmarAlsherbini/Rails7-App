@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :month_apps
+  resources :calendar_apps
   resources :test_children
   resources :test_parents
   resources :app_days

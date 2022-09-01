@@ -1,0 +1,37 @@
+<div id="<%= dom_id month_app %>">
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Calendar app:</strong>
+    <%= month_app.calendar_app_id %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Name:</strong>
+    <%= month_app.name %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Month:</strong>
+    <%= month_app.month %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Days:</strong>
+    <%= month_app.days %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Numspace:</strong>
+    <%= month_app.numSpace %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Current year:</strong>
+    <%= month_app.current_year %>
+  </p>
+
+  <% if action_name != "show" %>
+    <%= link_to "Show this month app", month_app, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+    <%= link_to 'Edit this month app', edit_month_app_path(month_app), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
+    <hr class="mt-6">
+  <% end %>
+</div>

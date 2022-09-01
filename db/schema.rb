@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_29_145742) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_01_121921) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -69,6 +69,23 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_29_145742) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "calendar_apps", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "month_apps", force: :cascade do |t|
+    t.bigint "calendar_app_id", null: false
+    t.string "name"
+    t.integer "month"
+    t.integer "days"
+    t.integer "numSpace"
+    t.integer "current_year"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["calendar_app_id"], name: "index_month_apps_on_calendar_app_id"
+  end
+
   create_table "posts", force: :cascade do |t|
     t.string "title"
     t.text "body"
@@ -105,6 +122,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_29_145742) do
   add_foreign_key "app_months", "app_calendars"
   add_foreign_key "app_months", "app_years"
   add_foreign_key "app_years", "app_calendars"
+  add_foreign_key "month_apps", "calendar_apps"
   add_foreign_key "test_children", "test_parents"
   add_foreign_key "test_parents", "test_children", column: "child_one"
   add_foreign_key "test_parents", "test_children", column: "child_two"

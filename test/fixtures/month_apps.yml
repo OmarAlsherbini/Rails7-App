@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  calendar_app: one
+  name: MyString
+  month: 1
+  days: 1
+  numSpace: 1
+  current_year: 1
+
+two:
+  calendar_app: two
+  name: MyString
+  month: 1
+  days: 1
+  numSpace: 1
+  current_year: 1

@@ -1,0 +1,28 @@
+<div class="mx-auto md:w-2/3 w-full flex">
+  <div class="mx-auto">
+    <% if notice.present? %>
+      <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
+    <% end %>
+    <p>Calendar: <%= link_to @calendar_app.id, @app_calendar, class: "text-teal-700" %></p>
+    <br/>
+    <p>Inspect: <%= @calendar_app.inspect %> </p>
+    <br/>
+    <p>CALENDAR</p>
+    <br/>
+    <%= @calendar.to_json %>
+    <br/>
+    <br/>
+    <p>Created: <%= @created_datetime.strftime('%d %B, %Y at %I:%M %p (%Z)') %> </p>
+    <p>Last Updated: <%= @last_updated.strftime('%d %B, %Y at %I:%M %p (%Z)') %> </p>
+    <p>Time Now: <%= Time.current.strftime('%d %B, %Y at %I:%M %p (%Z)') %> </p>
+    <p>Months Elapsed: <%= @month_elapsed  %> </p>
+    <br/>
+    <%= render @calendar_app %>
+
+    <%= link_to 'Edit this calendar_app', edit_calendar_app_path(@calendar_app), class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+    <div class="inline-block ml-2">
+      <%= button_to 'Destroy this calendar_app', calendar_app_path(@calendar_app), method: :delete, class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 font-medium" %>
+    </div>
+    <%= link_to 'Back to calendar_apps', calendar_apps_path, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+  </div>
+</div>

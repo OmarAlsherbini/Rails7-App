@@ -127,8 +127,8 @@ class AppCalendar < ApplicationRecord
 
       def calc_month_days(month_index, month_year)
         month_days = Array[31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-        if month_index != 2 and month_year % 4 != 0
-          return month_days[month_index+1]
+        if month_index != 2 or month_year % 4 != 0
+          return month_days[month_index-1]
         else
           return 29
         end
@@ -228,5 +228,5 @@ class AppCalendar < ApplicationRecord
   
       end
 
-
+  
 end
