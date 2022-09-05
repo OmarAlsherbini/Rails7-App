@@ -10,6 +10,10 @@ module RailsProj
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
+    config.generators.system_tests = nil
+    config.generators do |g|
+      g.test_framework = :rspec
+    end
 
     # Configuration for the application, engines, and railties goes here.
     #

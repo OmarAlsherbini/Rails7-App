@@ -72,13 +72,6 @@ class CalendarApp < ApplicationRecord
         self.update_cal(month_elapsed, months_all)
       end
 
-
-      """two_prev_yr = MonthApp.where(calendar_app_id: params[:id], current_year: date_today.year - 2).order(:id)
-      prev_yr = MonthApp.where(calendar_app_id: params[:id], current_year: date_today.year - 1).order(:id)
-      current_yr = MonthApp.where(calendar_app_id: params[:id], current_year: date_today.year).order(:id)
-      next_yr = MonthApp.where(calendar_app_id: params[:id], current_year: date_today.year + 1).order(:id)
-      two_next_yr = MonthApp.where(calendar_app_id: params[:id], current_year: date_today.year + 2).order(:id)
-      """
       calendar_arr = Array.new
       for mon in months_all
         calendar_arr.append({
@@ -89,54 +82,7 @@ class CalendarApp < ApplicationRecord
           "currentYear" => mon.current_year,
         })
       end
-      
-      
-      '''for mon in two_prev_yr
-        @calendar.append({
-          "name" => mon.name,
-          "month" => mon.month,
-          "days" => mon.days,
-          "numSpace" => mon.numSpace,
-          "currentYear" => mon.current_year,
-        })
-      end
-      for mon in prev_yr
-        @calendar.append({
-          "name" => mon.name,
-          "month" => mon.month,
-          "days" => mon.days,
-          "numSpace" => mon.numSpace,
-          "currentYear" => mon.current_year,
-        })
-      end
-      for mon in current_yr
-        @calendar.append({
-          "name" => mon.name,
-          "month" => mon.month,
-          "days" => mon.days,
-          "numSpace" => mon.numSpace,
-          "currentYear" => mon.current_year,
-        })
-      end
-      for mon in next_yr
-        @calendar.append({
-          "name" => mon.name,
-          "month" => mon.month,
-          "days" => mon.days,
-          "numSpace" => mon.numSpace,
-          "currentYear" => mon.current_year,
-        })
-      end
-      for mon in two_next_yr
-        @calendar.append({
-          "name" => mon.name,
-          "month" => mon.month,
-          "days" => mon.days,
-          "numSpace" => mon.numSpace,
-          "currentYear" => mon.current_year,
-        })
-      end
-      '''
+
       return calendar_arr
     end
 
@@ -203,7 +149,7 @@ class CalendarApp < ApplicationRecord
             if year_idx == month_year
               overall_numspace_shift = overall_numspace_shift + month_mod_7[(month_index-1)..11].sum
             elsif year_idx == year_current
-              if month_index > 1
+              if month_current > 1
                 overall_numspace_shift = overall_numspace_shift + month_mod_7[0..(month_current-2)].sum
               end 
             else
@@ -261,6 +207,5 @@ class CalendarApp < ApplicationRecord
         end
   
       end
-
 
 end
