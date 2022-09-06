@@ -1,12 +1,22 @@
 require 'rails_helper'
 
 RSpec.describe CalendarApp, type: :model do
-  # This test only works in September 2022 since calendar would need to be updated.
+  # This test only works when there are no created test data ran from previous months existing in the test DB.
+  # Please make sure to either delete previous calendar test data and start new ones!
   begin
     cal = CalendarApp.find(1)
   rescue
     cal = CalendarApp.create()
   ensure
+    cal_n_mon_span = cal.n_mon_span
+    cal_n_yr_span = cal.n_yr_span
+    if cal.include_current_month_in_past
+      cal_add_to_past = 1
+    else
+      cal_add_to_past = 0
+    end
+    future_months = cal_n_mon_span + 12*cal_n_yr_span
+    past_months = cal_n_mon_span + 12*cal_n_yr_span - cal_add_to_past
     puts "\nIt must have correct and sorted month range:"
     it "must have correct and sorted month range" do
       for indx in 0..9 do # Run 10 times
@@ -21,14 +31,10 @@ RSpec.describe CalendarApp, type: :model do
         x_axis_diff = rand_x_axis - current_x_axis
         if x_axis_diff == 0
           res_expected = "Current month"
-        elsif x_axis_diff > 0 and x_axis_diff <= 6
-          res_expected = "Next 6 months"
-        elsif x_axis_diff > 6 and x_axis_diff <= 18
-          res_expected = "Next year & 6 months"
-        elsif x_axis_diff < 0 and x_axis_diff > -6
-          res_expected = "Past 5 months"
-        elsif x_axis_diff <= -6 and x_axis_diff > -18
-          res_expected = "Past year and 5 months"
+        elsif x_axis_diff > 0 and x_axis_diff <= future_months
+          res_expected = "Next months"
+        elsif x_axis_diff < 0 and x_axis_diff >= -past_months
+          res_expected = "Past months"
         else
           res_expected = "Not registered on calendar"
         end
@@ -39,14 +45,10 @@ RSpec.describe CalendarApp, type: :model do
           found_x_axis_diff = found_x_axis - current_x_axis
           if found_x_axis_diff == 0
             res_found = "Current month"
-          elsif found_x_axis_diff > 0 and found_x_axis_diff <= 6
-            res_found = "Next 6 months"
-          elsif found_x_axis_diff > 6 and found_x_axis_diff <= 18
-            res_found = "Next year & 6 months"
-          elsif found_x_axis_diff < 0 and found_x_axis_diff > -6
-            res_found = "Past 5 months"
-          elsif found_x_axis_diff <= -6 and found_x_axis_diff > -18
-            res_found = "Past year and 5 months"
+          elsif found_x_axis_diff > 0 and found_x_axis_diff <= future_months
+            res_found = "Next months"
+          elsif found_x_axis_diff < 0 and found_x_axis_diff >= -past_months
+            res_found = "Past months"
           else
             res_found = "ERROR: a month exists when it shouldn't. Has the calendar been updated?"
           end

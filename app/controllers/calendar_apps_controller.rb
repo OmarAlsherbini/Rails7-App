@@ -75,6 +75,8 @@ class CalendarAppsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def calendar_app_params
-      params.fetch(:calendar_app, {})
+      #params.fetch(:calendar_app, {})
+      params.require(:calendar_app).permit(:n_mon_span, :n_yr_span, :include_current_month_in_past)
     end
 end
+

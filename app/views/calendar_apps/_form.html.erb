@@ -11,6 +11,27 @@
     </div>
   <% end %>
 
+  <div>
+  <span>
+    <%= form.label "Months forward & backward:", style: "mr-30 text-orange-600" %>
+    <%= form.number_field :n_mon_span, style: "ml-30"  %>
+  </span>
+  </div>
+
+  <div>
+  <span>
+    <%= form.label "Years forward & backward:", style: "mr-30 text-orange-600" %>
+    <%= form.number_field :n_yr_span, style: "ml-30"  %>
+  </span>
+  </div>
+
+  <div>
+  <%= form.label :include_current_month_in_past, style: "display: block" %>
+  <%= form.check_box :include_current_month_in_past %>
+  
+    
+  </div>
+
   <div class="inline">
     <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
   </div>

@@ -7,67 +7,51 @@ class CalendarApp < ApplicationRecord
     def build_calendar
         months_names = Array["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         date_today = Time.current
-        # Creation of months need to be sorted by id and date simultaneously.
-        # Next and Previous 17 months are determined by current month, whether you will need 2 years ahead or 2 years behind or exactly 1 ahead and 1 behind if current month is June. This assumes current month counts among the past 18 months as well!
-        if date_today.month == 6
-          # Previous Year  
-          for month_idx in 1..12
-            MonthApp.create(calendar_app_id: self.id, name: months_names[month_idx-1], month:month_idx, days: CalendarApp.calc_month_days(month_idx, date_today.year-1), numSpace:CalendarApp.calc_numSpace(month_idx, date_today.year-1), current_year: date_today.year-1)
-          end
-          # Current Year
-          for month_idx in 1..12
-            MonthApp.create(calendar_app_id: self.id, name: months_names[month_idx-1], month:month_idx, days: CalendarApp.calc_month_days(month_idx, date_today.year), numSpace:CalendarApp.calc_numSpace(month_idx, date_today.year), current_year: date_today.year)
-          end
-          # Next Year
-          for month_idx in 1..12
-            MonthApp.create(calendar_app_id: self.id, name: months_names[month_idx-1], month:month_idx, days: CalendarApp.calc_month_days(month_idx, date_today.year+1), numSpace:CalendarApp.calc_numSpace(month_idx, date_today.year+1), current_year: date_today.year+1)
-          end
-        elsif date_today.month > 6
-          mth_diff = date_today.month - 6
-          # Previous Year
-          for month_idx in (mth_diff+1)..12
-            MonthApp.create(calendar_app_id: self.id, name: months_names[month_idx-1], month:month_idx, days: CalendarApp.calc_month_days(month_idx, date_today.year-1), numSpace:CalendarApp.calc_numSpace(month_idx, date_today.year-1), current_year: date_today.year-1)
-          end 
-          # Current Year
-          for month_idx in 1..12
-            MonthApp.create(calendar_app_id: self.id, name: months_names[month_idx-1], month:month_idx, days: CalendarApp.calc_month_days(month_idx, date_today.year), numSpace:CalendarApp.calc_numSpace(month_idx, date_today.year), current_year: date_today.year)
-          end
-          # Next Year
-          for month_idx in 1..12
-            MonthApp.create(calendar_app_id: self.id, name: months_names[month_idx-1], month:month_idx, days: CalendarApp.calc_month_days(month_idx, date_today.year+1), numSpace:CalendarApp.calc_numSpace(month_idx, date_today.year+1), current_year: date_today.year+1)
-          end
-          # Next 2 Years
-          for month_idx in 1..mth_diff
-            MonthApp.create(calendar_app_id: self.id, name: months_names[month_idx-1], month:month_idx, days: CalendarApp.calc_month_days(month_idx, date_today.year+2), numSpace:CalendarApp.calc_numSpace(month_idx, date_today.year+2), current_year: date_today.year+2)
-          end
-            
-        else
-          # Previous 2 Years
-          mth_diff = 6 - date_today.month
-          for month_idx in (12-mth_diff)..12
-            MonthApp.create(calendar_app_id: self.id, name: months_names[month_idx-1], month:month_idx, days: CalendarApp.calc_month_days(month_idx, date_today.year-2), numSpace:CalendarApp.calc_numSpace(month_idx, date_today.year-2), current_year: date_today.year-2)
-          end
-          # Previous Year
-          for month_idx in 1..12
-            MonthApp.create(calendar_app_id: self.id, name: months_names[month_idx-1], month:month_idx, days: CalendarApp.calc_month_days(month_idx, date_today.year-1), numSpace:CalendarApp.calc_numSpace(month_idx, date_today.year-1), current_year: date_today.year-1)
-          end
-          # Current Year
-          for month_idx in 1..12
-            MonthApp.create(calendar_app_id: self.id, name: months_names[month_idx-1], month:month_idx, days: CalendarApp.calc_month_days(month_idx, date_today.year), numSpace:CalendarApp.calc_numSpace(month_idx, date_today.year), current_year: date_today.year)
-          end
-          # Next Year
-          for month_idx in 1..(12-mth_diff)
-            MonthApp.create(calendar_app_id: self.id, name: months_names[month_idx-1], month:month_idx, days: CalendarApp.calc_month_days(month_idx, date_today.year+1), numSpace:CalendarApp.calc_numSpace(month_idx, date_today.year+1), current_year: date_today.year+1)
-          end
+        n_mon = self.n_mon_span
+        n_yr = self.n_yr_span
+        is_included = self.include_current_month_in_past
+        # To start from 1 not 0, you sub 1 and add 1
+        mon_start_idx = (date_today.month - n_mon - 12*n_yr - 1) % 12 + 1 
+        mon_stop_idx = (date_today.month + n_mon + 12*n_yr - 1) % 12 + 1 
+        yr_start_idx = date_today.year + ((date_today.month - n_mon - 12*n_yr - 1) / 12).to_i
+        yr_stop_idx = date_today.year + ((date_today.month + n_mon + 12*n_yr - 1) / 12).to_i 
+        
+        if is_included
+          mon_start_idx = mon_start_idx % 12 + 1 
+          yr_start_idx = yr_start_idx + (mon_start_idx / 12).to_i
         end
+
+        # Creation of months ids has to be sorted in chronological order!
+        for yr_idx in yr_start_idx..yr_stop_idx
+          if yr_idx == yr_start_idx
+            if yr_idx < yr_stop_idx
+              loop_idx_start = mon_start_idx
+              loop_idx_stop = 12
+            else
+              loop_idx_start = mon_start_idx
+              loop_idx_stop = mon_stop_idx
+            end
+
+          elsif yr_idx < yr_stop_idx
+            loop_idx_start = 1
+            loop_idx_stop = 12
+          else
+            loop_idx_start = 1
+            loop_idx_stop = mon_stop_idx
+          end
+
+          for month_idx in loop_idx_start..loop_idx_stop
+            MonthApp.create(calendar_app_id: self.id, name: months_names[month_idx-1], month:month_idx, days: CalendarApp.calc_month_days(month_idx, yr_idx), numSpace:CalendarApp.calc_numSpace(month_idx, yr_idx), current_year: yr_idx)
+          end
+
+        end
+
     end
 
     def self.call_from_controller(cal_id, month_elapsed)
       date_today = Time.current
       months_all = MonthApp.where(calendar_app_id: cal_id).order(:id)
       
-      
-
       if month_elapsed > 0
         self.update_cal(month_elapsed, months_all)
       end
@@ -90,8 +74,8 @@ class CalendarApp < ApplicationRecord
       date_today = Time.current
       months_names = Array["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
       for mon in months_all
-        new_month = (mon.month + month_elapsed) % 12
-        new_year = mon.current_year + ((mon.month + month_elapsed) / 12).to_i 
+        new_month = (mon.month + month_elapsed - 1) % 12 + 1
+        new_year = mon.current_year + ((mon.month + month_elapsed - 1) / 12).to_i 
         mon.update(name: months_names[new_month-1], month:new_month, days: CalendarApp.calc_month_days(new_month, new_year), numSpace:CalendarApp.calc_numSpace(new_month, new_year), current_year: new_year, updated_at: date_today)
       end
       cal_obj = CalendarApp.find(months_all[0].calendar_app_id)

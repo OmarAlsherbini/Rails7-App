@@ -5,6 +5,6 @@ FactoryBot.define do
     current_year {2022}
     name {"January"}
     days {31}
-    numSpace {0}
+    numSpace {6}
   end
 end
