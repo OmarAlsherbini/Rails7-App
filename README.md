@@ -162,7 +162,7 @@ sudo apt update && sudo apt upgrade
 sudo apt install pgadmin4
 sudo /usr/pgadmin4/bin/setup-web.sh
 
-# http://your-server-ip-address/pgadmin4
+# 127.0.0.1/pgadmin4
 ```
 
 # README
