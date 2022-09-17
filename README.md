@@ -148,6 +148,23 @@ You can watch on the page that this post gets broadcasted immediately on the pag
 
 DONE!
 
+## 10) Install Devise
+```
+rails g devise:install
+```
+
+## 11) Install pgadmin4
+```
+sudo apt install curl
+curl -fsSL https://www.pgadmin.org/static/packages_pgadmin_org.pub | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/pgadmin.gpg
+sudo sh -c 'echo "deb https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/$(lsb_release -cs) pgadmin4 main" > /etc/apt/sources.list.d/pgadmin4.list'
+sudo apt update && sudo apt upgrade
+sudo apt install pgadmin4
+sudo /usr/pgadmin4/bin/setup-web.sh
+
+# http://your-server-ip-address/pgadmin4
+```
+
 # README
 
 This README would normally document whatever steps are necessary to get the
