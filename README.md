@@ -53,6 +53,7 @@ sudo gem install rails
 ```
 git clone  https://github.com/OmarAlsherbini/Rails7-App.git
 cd Rails7-App
+sudo bundle install
 ```
 
 ## 7) DB Connection
