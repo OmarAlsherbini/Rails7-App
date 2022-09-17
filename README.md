@@ -5,13 +5,12 @@
 sudo apt update
 sudo apt-get update
 sudo apt install npm
-npm install --global yarn
+sudo npm install --global yarn
 sudo apt install git
 ```
 
 ## 1) Install Ruby 3.0
 ```
-ruby 3.0.2p107 <br/>
 sudo apt-get install ruby-full
 sudo apt  install ruby-bundler
 ```
@@ -38,7 +37,7 @@ exit
 ```
 ## 3) Install Tailwind CSS
 ```
-npm install tailwindcss@^1
+sudo npm install tailwindcss@^1
 ```
 ## 4) Install Redis
 ```
@@ -47,7 +46,7 @@ sudo systemctl enable redis-server.service
 ```
 ## 5) Install Rails
 ```
-gem install rails
+sudo gem install rails
 ```
 
 ## 6) Clone this repo
