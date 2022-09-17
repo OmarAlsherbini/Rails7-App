@@ -45,13 +45,18 @@ npm install tailwindcss@^1
 sudo apt install redis
 sudo systemctl enable redis-server.service
 ```
-## 5) Clone this repo
+## 5) Install Rails
+```
+gem install rails
+```
+
+## 6) Clone this repo
 ```
 git clone  https://github.com/OmarAlsherbini/Rails7-App.git
 cd Rails7-App
 ```
 
-## 6) DB Connection
+## 7) DB Connection
 Create encryption for you DB connection via:
 ```
 EDITOR=nano rails credentials:edit
@@ -81,7 +86,7 @@ ALTER USER <your_username> WITH PASSWORD '<your_password>';
 ```
 Even if you use the exact same credentials you inserted before. Yes, I know that this doesn't make much sense, but I ran into the same issue and this solved it for me. It could be either a bug in PostgreSQL or rails or Linux... idk... but by then we should expect the creation and migration of the DB to go smoothly and the connection to the DB to be correctly established.
 
-## 7) Rails Startup
+## 8) Rails Startup
 To run the project, run:
 ```
 rails s
@@ -125,7 +130,7 @@ And then:
 ```
 ./bin/dev
 ```
-## 8) Test the Posts App
+## 9) Test the Posts App
 Head to ```http://127.0.0.1:3000/posts/```, styled by Tailwind CSS. <br/>
 There, you will see a random word popping out of the Redis cache every time you refresh with a second expiry. You can check the redis behavior by opening a new terminal in the same directory and running:
 ```
