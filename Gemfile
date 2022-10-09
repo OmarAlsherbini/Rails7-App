@@ -84,3 +84,7 @@ end
 gem "tailwindcss-rails", "~> 2.0"
 
 gem 'rspec-rails'
+
+gem 'devise'
+
+gem 'geocoder'

@@ -5,6 +5,12 @@ class CalendarAppsController < ApplicationController
   # GET /calendar_apps or /calendar_apps.json
   def index
     @calendar_apps = CalendarApp.all
+    @user_country = request.location.country
+    @user_city = request.location.city
+    #@location = "WRRRRYYYYYY"
+    # @user_ip_address = 
+    #@user_physical_address = request.location.country
+    #@user_lat_long = request.location.country
   end
 
   # GET /calendar_apps/1 or /calendar_apps/1.json
@@ -55,6 +61,20 @@ class CalendarAppsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to calendar_apps_url, notice: "Calendar app was successfully destroyed." }
       format.json { head :no_content }
+    end
+  end
+
+  def location
+    if params[:location].blank?
+      if Rails.env.test? || Rails.env.development?
+        @location ||= Geocoder.search("50.78.167.161").first
+      else
+        @location ||= request.location
+      end
+    else
+      params[:location].each {|l| l = l.to_i } if params[:location].is_a? Array
+      @location ||= Geocoder.search(params[:location]).first
+      @location
     end
   end
 
