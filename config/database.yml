@@ -87,6 +87,9 @@ test:
 #
 production:
   <<: *default
+  adapter: postgresql
   database: rails_proj_production
   username: rails_proj
   password: <%= ENV["RAILS_PROJ_DATABASE_PASSWORD"] %>
+  pool: 5
+  timeout: 5000
