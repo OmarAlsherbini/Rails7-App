@@ -5,8 +5,8 @@ class CalendarAppsController < ApplicationController
   # GET /calendar_apps or /calendar_apps.json
   def index
     @calendar_apps = CalendarApp.all
-    @user_country = request.location.country
-    @user_city = request.location.city
+    #@user_country = request.location.country
+    #@user_city = request.location.city
     #@location = "WRRRRYYYYYY"
     # @user_ip_address = 
     #@user_physical_address = request.location.country
