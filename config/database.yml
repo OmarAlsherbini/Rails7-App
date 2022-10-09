@@ -23,8 +23,8 @@ default: &default
 
 development:
   <<: *default
-  username: <%= Rails.application.credentials.database[:username] %>
-  password: <%= Rails.application.credentials.database[:password] %>
+  username: psql_super
+  password: M@ss04418
   host: localhost
   database: rails_proj_development
 
@@ -60,8 +60,8 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  username: <%= Rails.application.credentials.database[:username] %>
-  password: <%= Rails.application.credentials.database[:password] %>
+  username: psql_super
+  password: M@ss04418
   host: localhost
   database: rails_proj_test
 
@@ -88,7 +88,7 @@ test:
 production:
   adapter: postgresql
   database: rails_proj_production
-  username: psql_root
-  password: G#$%^l0356
+  username: psql_super
+  password: M@ss04418
   pool: 5
   timeout: 5000
