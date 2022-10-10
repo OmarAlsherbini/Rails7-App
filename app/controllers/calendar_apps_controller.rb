@@ -12,9 +12,8 @@ class CalendarAppsController < ApplicationController
     #@location = "WRRRRYYYYYY"
     # @user_ip_address = 
     @user_physical_address = request.location.address
-    @user_ip_address = request.location.ip_address
-    @user_lat = request.location.lat
-    @user_long = request.location.long
+    @user_ip_address = request.location.ip
+    @user_lat_long = request.location.loc
   end
 
   # GET /calendar_apps/1 or /calendar_apps/1.json
