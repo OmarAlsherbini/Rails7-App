@@ -6,12 +6,15 @@ class CalendarAppsController < ApplicationController
   def index
     @calendar_apps = CalendarApp.all
     #lol
+    @all_location = request.location.data
     @user_country = request.location.country
-    #@user_city = request.location.city
+    @user_city = request.location.city
     #@location = "WRRRRYYYYYY"
     # @user_ip_address = 
-    #@user_physical_address = request.location.country
-    #@user_lat_long = request.location.country
+    @user_physical_address = request.location.address
+    @user_ip_address = request.location.ip_address
+    @user_lat = request.location.lat
+    @user_long = request.location.long
   end
 
   # GET /calendar_apps/1 or /calendar_apps/1.json

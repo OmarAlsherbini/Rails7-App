@@ -9,6 +9,12 @@
   </div>
   <div>
   <p><b>Location:</b> <%= @user_city %>, <%= @user_country %></p>
+  <p><b>Street Address:</b> <%= @user_physical_address %></p>
+  <p><b>IP Address:</b> <%= @user_ip_address %></p>
+  <p><b>Lat:</b> <%= @user_lat %></p>
+  <p><b>Long:</b> <%= @user_long %></p>
+  <br>
+  <p><b>Location Data:</b> <%= @all_location.inspect %></p>
   </div>
   <div id="calendar_apps" class="min-w-full">
     <%= render @calendar_apps %>
