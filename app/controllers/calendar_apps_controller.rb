@@ -7,15 +7,19 @@ class CalendarAppsController < ApplicationController
     @calendar_apps = CalendarApp.all
     #lol
     @all_location = request.location.data
-    @user_country = request.location.country
-    @user_city = request.location.city
+    # @user_country = request.location.country
+    # @user_city = request.location.city
+    @user_country = @all_location["country"]
+    @user_city = @all_location["city"]
     #@location = "WRRRRYYYYYY"
     # @user_ip_address = 
     @user_physical_address = request.location.address
-    @user_ip_address = request.location.ip
+    # @user_ip_address = request.location.ip
+    @user_ip_address = @all_location["ip"]
+    @user_lat_long = @all_location["loc"]
     # @user_lat = request.location.lat
     # @user_long = request.location.long
-    @user_lat_long = request.location.data.loc
+    # @user_lat_long = request.location.data.loc
   end
 
   # GET /calendar_apps/1 or /calendar_apps/1.json
