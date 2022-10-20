@@ -65,6 +65,6 @@ class UserEventsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def user_event_params
-      params.require(:user_event).permit(:Event_id, :user_id, :user_physical_address, :user_lat_long, :user_performance)
+      params.require(:user_event).permit(:event_id, :user_id, :user_first_name, :user_last_name, :user_phone_number, :user_physical_address, :user_lat_long, :user_performance)
     end
 end

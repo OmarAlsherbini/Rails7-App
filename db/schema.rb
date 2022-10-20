@@ -129,6 +129,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_18_104351) do
   create_table "user_events", force: :cascade do |t|
     t.bigint "event_id", null: false
     t.bigint "user_id", null: false
+    t.string "user_first_name"
+    t.string "user_last_name"
+    t.string "user_phone_number"
     t.string "user_physical_address"
     t.string "user_lat_long"
     t.float "user_performance"

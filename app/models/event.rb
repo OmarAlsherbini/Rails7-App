@@ -2,6 +2,7 @@ class Event < ApplicationRecord
   belongs_to :month_app
   has_many :user_event
   has_many :users, through: :user_event
+  attr_accessor :user_id
   # after_create :create_user_event
 
   private
