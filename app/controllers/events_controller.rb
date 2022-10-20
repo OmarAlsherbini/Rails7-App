@@ -23,11 +23,24 @@ class EventsController < ApplicationController
   # POST /events or /events.json
   def create
     @event = Event.new(event_params)
-    check_save = @event.save
-    UserEvent.create(event_id: @event.id, user_id: current_user.id, user_physical_address: @user_physical_address, user_lat_long: @user_lat_long)
+
+    @all_location = request.location.data
+    # @user_country = request.location.country
+    # @user_city = request.location.city
+    @user_country = @all_location["country"]
+    @user_city = @all_location["city"]
+    @user_physical_address = request.location.address
+    # @user_ip_address = request.location.ip
+    @user_ip_address = @all_location["ip"]
+    @user_lat_long = @all_location["loc"]
+    # @user_lat = request.location.lat
+    # @user_long = request.location.long
+    # @user_lat_long = request.location.data.loc
+
 
     respond_to do |format|
-      if check_save
+      if @event.save
+        UserEvent.create(event_id: @event.id, user_id: current_user.id, user_physical_address: @user_physical_address, user_lat_long: @user_lat_long)
         format.html { redirect_to event_url(@event), notice: "Event was successfully created." }
         format.json { render :show, status: :created, location: @event }
       else
