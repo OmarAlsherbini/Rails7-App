@@ -22,12 +22,23 @@ class EventsController < ApplicationController
 
   # POST /events or /events.json
   def create
-    if event_params[:start_date] >= event_params[:end_date]
-      format.html { render :new, alert: "Error: End date must be greater than start date!", status: :bad_request }
-      format.json { render json: { :errors => "Error: End date must be greater than start date!" }.to_json, status: :bad_request }
-    end
     @event = Event.new(event_params)
-    create_check = @event.save
+    
+        
+
+                
+
+
+        
+
+
+    respond_to do |format|
+      if event_params[:start_date] >= event_params[:end_date]
+        format.html { render :new, alert: "Error: End date must be greater than start date!", status: :bad_request }
+        format.json { render json: { :errors => "Error: End date must be greater than start date!" }.to_json, status: :bad_request }
+      end
+
+      if @event.save
         if event_params[:event_type] == "1"
           # Check if user_id is inserted.
           if event_params[:user_id]
@@ -87,15 +98,6 @@ class EventsController < ApplicationController
           end
         end
 
-                
-
-
-        
-
-
-    respond_to do |format|
-      if create_check
-        
         format.html { redirect_to event_url(@event), notice: "Event was successfully created." }
         format.json { render :show, status: :created, location: @event }
       else
