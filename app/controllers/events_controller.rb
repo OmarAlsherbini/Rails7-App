@@ -72,9 +72,11 @@ class EventsController < ApplicationController
               # @user_long = request.location.long
               # @user_lat_long = request.location.data.loc
               p "\n\nAll Clear!!\n\nAll Clear!!\n\nAll Clear!!\n\nAll Clear!!"
+              p "Value of first name is: #{host_user.first_name}"
               # All clear! Now, create the event for the host user.
               UserEvent.create(event_id: @event.id, user_id: event_params[:user_id], user_first_name: current_user.first_name, user_last_name: current_user.last_name, user_phone_number: current_user.phone_number, user_physical_address: @user_physical_address, user_lat_long: @user_lat_long)
               # Create the event for the current user.
+              p ""
               UserEvent.create(event_id: @event.id, user_id: current_user.id, user_first_name: host_user.first_name, user_last_name: host_user.last_name, user_phone_number: host_user.phone_number)
               p "\n\nUSER EVENT CREATED Successfully!!\n\nUSER EVENT CREATED Successfully!!\n\nUSER EVENT CREATED Successfully!!\n\nUSER EVENT CREATED Successfully!!\n\nUSER EVENT CREATED Successfully!!"
             else
