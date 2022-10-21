@@ -70,7 +70,7 @@ class EventsController < ApplicationController
               current_user.lat_long = @user_lat_long
               UserEvent.create(event_id: @event.id, user_id: event_params[:user_id], user_first_name: current_user.first_name, user_last_name: current_user.last_name, user_phone_number: current_user.phone_number, user_physical_address: current_user.physical_address, user_lat_long: current_user.lat_long)
               # Create the event for the current user.
-              UserEvent.create(event_id: @event.id, user_id: current_user.id, user_first_name: host_user.first_name, user_last_name: host_user.last_name, user_phone_number: host_user.phone_number, user_physical_address: host.physical_address, user_lat_long: host.lat_long)
+              UserEvent.create(event_id: @event.id, user_id: current_user.id, user_first_name: host_user.first_name, user_last_name: host_user.last_name, user_phone_number: host_user.phone_number, user_physical_address: host_user.physical_address, user_lat_long: host_user.lat_long)
             else
               @event.delete
               format.html { render :new, alert: "Error: User does not exist!", status: :bad_request }
