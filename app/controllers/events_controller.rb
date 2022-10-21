@@ -26,19 +26,13 @@ class EventsController < ApplicationController
       format.html { render :new, alert: "Error: End date must be greater than start date!", status: :bad_request }
       format.json { render json: { :errors => "Error: End date must be greater than start date!" }.to_json, status: :bad_request }
     end
-    p "\n\n\nWRRRYYY!!!\nWRRRYYY!!!\nWRRRYYY!!!\nWRRRYYY!!!\nWRRRYYY!!!\nWRRRYYY!!!"
     @event = Event.new(event_params)
-    p "\nCREATED!!\nCREATED!!\nCREATED!!"
     create_check = @event.save
-
-
-        p "\nSAVED!!\nSAVED!!\nSAVED!!\nSAVED!!"
         if event_params[:event_type] == "1"
           # Check if user_id is inserted.
           if event_params[:user_id]
             host_user = User.find(event_params[:user_id])
             if host_user
-              p "\nUSER FOUND!!\nUSER FOUND!!\nUSER FOUND!!\nUSER FOUND!!\nUSER FOUND!!"
               # Check event conflicts for the host user.
               all_host_events = UserEvent.where(user_id: event_params[:user_id])
               for host_event in all_host_events
@@ -71,14 +65,12 @@ class EventsController < ApplicationController
               # @user_lat = request.location.lat
               # @user_long = request.location.long
               # @user_lat_long = request.location.data.loc
-              p "\n\nAll Clear!!\n\nAll Clear!!\n\nAll Clear!!\n\nAll Clear!!"
-              p "Value of first name is: #{host_user.first_name}"
               # All clear! Now, create the event for the host user.
-              UserEvent.create(event_id: @event.id, user_id: event_params[:user_id], user_first_name: current_user.first_name, user_last_name: current_user.last_name, user_phone_number: current_user.phone_number, user_physical_address: @user_physical_address, user_lat_long: @user_lat_long)
+              current_user.physical_address = @user_physical_address
+              current_user.lat_long = @user_lat_long
+              UserEvent.create(event_id: @event.id, user_id: event_params[:user_id], user_first_name: current_user.first_name, user_last_name: current_user.last_name, user_phone_number: current_user.phone_number, user_physical_address: current_user.physical_address, user_lat_long: current_user.lat_long)
               # Create the event for the current user.
-              p ""
-              UserEvent.create(event_id: @event.id, user_id: current_user.id, user_first_name: host_user.first_name, user_last_name: host_user.last_name, user_phone_number: host_user.phone_number)
-              p "\n\nUSER EVENT CREATED Successfully!!\n\nUSER EVENT CREATED Successfully!!\n\nUSER EVENT CREATED Successfully!!\n\nUSER EVENT CREATED Successfully!!\n\nUSER EVENT CREATED Successfully!!"
+              UserEvent.create(event_id: @event.id, user_id: current_user.id, user_first_name: host_user.first_name, user_last_name: host_user.last_name, user_phone_number: host_user.phone_number, user_physical_address: host.physical_address, user_lat_long: host.lat_long)
             else
               @event.delete
               format.html { render :new, alert: "Error: User does not exist!", status: :bad_request }
@@ -92,12 +84,6 @@ class EventsController < ApplicationController
             format.html { render :new, alert: "Error: No user was selected for event type 1!", status: :bad_request }
             format.json { render json: { :errors => "Error: No user was selected for event type 1!" }.to_json, status: :bad_request }
           end
-        else
-          p "WWWHHHHAAAAT THEEEEE HHHEEEEELLLL???!!!!"
-          p "WWWHHHHAAAAT THEEEEE HHHEEEEELLLL???!!!!"
-          p "WWWHHHHAAAAT THEEEEE HHHEEEEELLLL???!!!!"
-          p "WWWHHHHAAAAT THEEEEE HHHEEEEELLLL???!!!!"
-          p "WWWHHHHAAAAT THEEEEE HHHEEEEELLLL???!!!!"
         end
 
                 
