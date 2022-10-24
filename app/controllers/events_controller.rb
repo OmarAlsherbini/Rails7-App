@@ -34,7 +34,7 @@ class EventsController < ApplicationController
         format.html { render :new, alert: "Error: Month does not exist in Calendar!", status: :bad_request }
         format.json { render json: { :errors => "Error: Month does not exist in Calendar!" }.to_json, status: :bad_request }
       end
-
+# comment
       if @event.save
         if event_params[:event_type] == "1"
           # Check if user_id is inserted.
