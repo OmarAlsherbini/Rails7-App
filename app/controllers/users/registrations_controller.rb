@@ -5,18 +5,18 @@ class Users::RegistrationsController < Devise::RegistrationsController
   before_action :configure_account_update_params, only: [:update]
 
   # GET /resource/sign_up
-  def new
+  # def new
+  #   super
+  # end
+
+  # POST /resource
+  def create
     super
     @all_location = request.location.data
     current_user.lat_long = @all_location["loc"]
     current_user.physical_address = equest.location.address
     current_user.save
   end
-
-  # POST /resource
-  # def create
-  #   super
-  # end
 
   # GET /resource/edit
   # def edit
