@@ -29,10 +29,12 @@ class EventsController < ApplicationController
       if event_params[:start_date] >= event_params[:end_date]
         format.html { render :new, alert: "Error: End date must be greater than start date!", status: :bad_request }
         format.json { render json: { :errors => "Error: End date must be greater than start date!" }.to_json, status: :bad_request }
+        return
       end
       if not MonthApp.exists?(event_params[:month_app_id])
         format.html { render :new, alert: "Error: Month does not exist in Calendar!", status: :bad_request }
         format.json { render json: { :errors => "Error: Month does not exist in Calendar!" }.to_json, status: :bad_request }
+        return
       end
 # comment
       if @event.save
@@ -44,6 +46,7 @@ class EventsController < ApplicationController
               @event.delete
               format.html { render :new, alert: "Error: User does not exist!", status: :bad_request }
               format.json { render json: { :errors => "Error: User does not exist!" }.to_json, status: :bad_request }
+              return
             else
               host_user = User.find(event_params[:user_id])
               # Check event conflicts for the host user.
@@ -53,6 +56,7 @@ class EventsController < ApplicationController
                   @event.delete
                   format.html { render :new, alert: "Error: A non-overwritable event already exists at that time for the host!", status: :bad_request }
                   format.json { render json: { :errors => "Error: A non-overwritable event already exists at that time for the host!" }.to_json, status: :bad_request }
+                  return
                 end
               end
 
@@ -63,6 +67,7 @@ class EventsController < ApplicationController
                   @event.delete
                   format.html { render :new, alert: "Error: A non-overwritable event already exists at that time for the current user!", status: :bad_request }
                   format.json { render json: { :errors => "Error: A non-overwritable event already exists at that time for the current user!" }.to_json, status: :bad_request }
+                  return
                 end
               end
 
@@ -92,6 +97,7 @@ class EventsController < ApplicationController
             @event.delete
             format.html { render :new, alert: "Error: No user was selected for event type 1!", status: :bad_request }
             format.json { render json: { :errors => "Error: No user was selected for event type 1!" }.to_json, status: :bad_request }
+            return
           end
         elsif event_params[:event_type] == "0"
           # You can't allow a type 0 event to be overwritable!
@@ -99,6 +105,7 @@ class EventsController < ApplicationController
             @event.delete
             format.html { render :new, alert: "Error: Creating an overwritable type 0 event is not allowed!", status: :bad_request }
             format.json { render json: { :errors => "Error: Creating an overwritable type 0 event is not allowed!" }.to_json, status: :bad_request }
+            return
           end
 
           # Check event conflicts for the current user.
@@ -108,6 +115,7 @@ class EventsController < ApplicationController
               @event.delete
               format.html { render :new, alert: "Error: A non-overwritable event already exists at that time for the current user!", status: :bad_request }
               format.json { render json: { :errors => "Error: A non-overwritable event already exists at that time for the current user!" }.to_json, status: :bad_request }
+              return
             end
           end
           # Create the event for the current user.
