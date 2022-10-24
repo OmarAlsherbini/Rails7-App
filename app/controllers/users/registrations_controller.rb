@@ -11,11 +11,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # POST /resource
   def create
-    super
-    @all_location = request.location.data
-    current_user.lat_long = @all_location["loc"]
-    current_user.physical_address = equest.location.address
-    current_user.save
+    super do |user|
+      @all_location = request.location.data
+      user.lat_long = @all_location["loc"]
+      user.physical_address = request.location.address
+      user.save
+    end
   end
 
   # GET /resource/edit
