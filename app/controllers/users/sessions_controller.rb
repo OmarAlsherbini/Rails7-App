@@ -9,9 +9,14 @@ class Users::SessionsController < Devise::SessionsController
   # end
 
   # POST /resource/sign_in
-  # def create
-  #   super
-  # end
+  def create
+    super do |user|
+      @all_location = request.location.data
+      user.lat_long = @all_location["loc"]
+      user.physical_address = request.location.address
+      user.save
+    end
+  end
 
   # DELETE /resource/sign_out
   # def destroy
