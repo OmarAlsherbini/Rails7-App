@@ -24,7 +24,7 @@ Rails.application.routes.draw do
   get 'setup_proof/stimulus_test'
   get 'setup_proof/tailwind_test'
   get 'site/index'
-  get 'events/get_user_events/:id', :to => 'events#get_user_events'  
+  get 'events/get_user_events/:id', :to => 'events#get_user_events', :as => 'get_user_events'  
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
