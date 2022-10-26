@@ -88,3 +88,9 @@ gem 'rspec-rails'
 gem 'devise'
 
 gem 'geocoder'
+
+gem 'rack-cors'
+
+gem 'devise-jwt'
+
+gem 'fast_jsonapi'

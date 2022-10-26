@@ -2,6 +2,7 @@
 
 class Users::RegistrationsController < Devise::RegistrationsController
   # before_action :configure_sign_up_params, only: [:create]
+  respond_to :json
   before_action :configure_account_update_params, only: [:update]
 
   # GET /resource/sign_up
@@ -12,10 +13,16 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # POST /resource
   def create
     super do |user|
+      user = User.new(user_params)
       @all_location = request.location.data
       user.lat_long = @all_location["loc"]
       user.physical_address = request.location.address
       user.save
+      # if user.save
+      #   render json: { msg: "User signed up successfully!" }
+      # else
+      #   render json: { errors: { "email or password" => ["is invalid"] } }, status: :unprocessable_entity
+      # end
     end
   end
 
@@ -53,6 +60,11 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # If you have extra params to permit, append them to the sanitizer.
   def configure_account_update_params
     devise_parameter_sanitizer.permit(:account_update, keys: [:first_name, :last_name, :mailing_address, :phone_number])
+  end
+
+  private
+  def user_params
+    params.require(:user).permit(:email, :password)
   end
 
   # The path used after sign up.

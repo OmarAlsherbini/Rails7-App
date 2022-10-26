@@ -32,4 +32,12 @@ class Event < ApplicationRecord
     return eventData
   end
 
+  def self.check_events_conflict(old_start_date, old_end_date, new_start_date, new_end_date, old_overwritable, new_overwritable)
+    if !old_overwritable and !new_overwritable and ((old_start_date > new_start_date and old_start_date < new_end_date) or (old_end_date > new_start_date and old_end_date < new_end_date) or (old_start_date < new_start_date and old_end_date > new_end_date) or (old_start_date > new_start_date and old_end_date < new_end_date))
+      return true
+    else
+      return false
+    end
+  end
+
 end
