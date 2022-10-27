@@ -247,7 +247,7 @@ class EventsController < ApplicationController
           end
         elsif event_params[:event_type] == "0"
           # You can't allow a type 0 event to be overwritable!
-          if event_params[:overwritable]
+          if event_params[:overwritable] == "1"
             form_no_errors = false
             @event.errors.add(:overwritable, message: ": Creating an overwritable type 0 event is not allowed!")
             
