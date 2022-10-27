@@ -7,18 +7,15 @@ gem 'geocoder'
 gem 'devise-jwt'
 gem 'fast_jsonapi'
 ```
-
+## Devise & Devise JWT Authentication
+The app allows for user registration and login/logout via `devise` gem. However, this alone is meant to be used in HTML format, and doesn't quite support JSON requests with `Bearer` tokens to authenticate API JSON requests to access methods requiring user authentication. <br/>
+To fix that, another gem, `devise-jwt` is also installed, and while Rails project with `devise-jwt` would generally require an API-only app created from scratch for it, adjustments had to be made to its integration to make it compatible with the current HTML-based Rails app, following [this JWT Logins on Existing HTML Rails 5 App tutorial](https://medium.com/@brentkearney/json-web-token-jwt-and-html-logins-with-devise-and-ruby-on-rails-5-9d5e8195193d), with further modifications to the tutorials implementation to make it compatible with Rails 7 and its Turbo Stream components. <br/>
+Thus, a lot of edits were performed to the original default Devise `User` controllers and models, in addition to further changes to `devise.rb`, `routes.rb` and even the `application_controller.rb` itself. <br/>
 ## Geocoder Component
 The app uses `Geocoder`to get the physical address and the Lat-Long coordinates of the user, generally within 20 minutes by car of accuracy, and workable with Windscibe VPN browser extension. <br/>
 Th geocoder component doesn't work in development environment however, only in production. Thus, the app is also deployed to Heroku for functionality testing <br/>
 **Heroku deployment:** https://rails-events-geocoder-devise.herokuapp.com/ <br/>
 The user's location info is updated and stored into his `User` data upon signup, every login and every event creation done by them.
-
-## Devise & Devise JWT Authentication
-The app allows for user registration and login/logout via `devise` gem. However, this alone is meant to be used in HTML format, and doesn't quite support JSON requests with `Bearer` tokens to authenticate API JSON requests to access methods requiring user authentication. <br/>
-To fix that, another gem, `devise-jwt` is also installed, and while Rails project with `devise-jwt` would generally require an API-only app created from scratch for it, adjustments had to be made to its integration to make it compatible with the current HTML-based Rails app, following [this JWT Logins on Existing HTML Rails 5 App tutorial](https://medium.com/@brentkearney/json-web-token-jwt-and-html-logins-with-devise-and-ruby-on-rails-5-9d5e8195193d), with further modifications to the tutorials implementation to make it compatible with Rails 7 and its Turbo Stream components. <br/>
-Thus, a lot of edits were performed to the original default Devise `User` controllers and models, in addition to further changes to `devise.rb`, `routes.rb` and even the `application_controller.rb` itself. <br/>
-
 ## Events App
 The app allows a user to create an `Event` of `type 1` (scheduled) with another user based on their schedules, or create an `Event` of `type 0` (blocked) for his own calendar. <br/>
 > Events cannot overlap based on their `start_date`s and `end_date`s unless explicitely specified as such by an `overwritable` flag which is `false` by default. Creating an `overwritable` `Event` of `type 0` isn't allowed. <br/>
@@ -69,7 +66,6 @@ The app allows a user to create an `Event` of `type 1` (scheduled) with another 
                 new_user_session GET    /sign_in(.:format)                                       users/sessions#new {:format=>:html}
                 user_session POST   /sign_in(.:format)                                               users/sessions#create {:format=>:html}
                 destroy_user_session DELETE /sign_out(.:format)                            users/sessions#destroy {:format=>:html}
-
 ```
 #### Example Login `POST` Request to `/api/login` Via Postman
 ```
