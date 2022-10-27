@@ -95,25 +95,6 @@ The app allows a user to create an `Event` of `type 1` (scheduled) with another 
                 GET    /confirmation/:confirmation_token(.:format)                            confirmations#show
                 confirmation PATCH  /confirmation(.:format)                                      confirmations#create
 ```
-### Calendar Routes
-``
-                month_apps GET    /month_apps(.:format)                                           month_apps#index
-                POST   /month_apps(.:format)                                                               month_apps#create
-                new_month_app GET    /month_apps/new(.:format)                             month_apps#new
-                edit_month_app GET    /month_apps/:id/edit(.:format)                         month_apps#edit
-                month_app GET    /month_apps/:id(.:format)                                        month_apps#show
-                PATCH  /month_apps/:id(.:format)                                                        month_apps#update
-                PUT    /month_apps/:id(.:format)                                                           month_apps#update
-                DELETE /month_apps/:id(.:format)                                                      month_apps#destroy
-                calendar_apps GET    /calendar_apps(.:format)                                     calendar_apps#index
-                POST   /calendar_apps(.:format)                                                            calendar_apps#create
-                new_calendar_app GET    /calendar_apps/new(.:format)                      calendar_apps#new
-                edit_calendar_app GET    /calendar_apps/:id/edit(.:format)                  calendar_apps#edit
-                calendar_app GET    /calendar_apps/:id(.:format)                                 calendar_apps#show
-                PATCH  /calendar_apps/:id(.:format)                                                     calendar_apps#update
-                PUT    /calendar_apps/:id(.:format)                                                        calendar_apps#update
-                DELETE /calendar_apps/:id(.:format)                                                   calendar_apps#destroy
-```
 ### Events & UserEvent
 #### Routes List
 ```
@@ -227,6 +208,25 @@ In addition to 2 more created `UserEvent`s.
     "eventValue": null
   }
 ]
+```
+### Calendar Routes
+```
+                month_apps GET    /month_apps(.:format)                                           month_apps#index
+                POST   /month_apps(.:format)                                                               month_apps#create
+                new_month_app GET    /month_apps/new(.:format)                             month_apps#new
+                edit_month_app GET    /month_apps/:id/edit(.:format)                         month_apps#edit
+                month_app GET    /month_apps/:id(.:format)                                        month_apps#show
+                PATCH  /month_apps/:id(.:format)                                                        month_apps#update
+                PUT    /month_apps/:id(.:format)                                                           month_apps#update
+                DELETE /month_apps/:id(.:format)                                                      month_apps#destroy
+                calendar_apps GET    /calendar_apps(.:format)                                     calendar_apps#index
+                POST   /calendar_apps(.:format)                                                            calendar_apps#create
+                new_calendar_app GET    /calendar_apps/new(.:format)                      calendar_apps#new
+                edit_calendar_app GET    /calendar_apps/:id/edit(.:format)                  calendar_apps#edit
+                calendar_app GET    /calendar_apps/:id(.:format)                                 calendar_apps#show
+                PATCH  /calendar_apps/:id(.:format)                                                     calendar_apps#update
+                PUT    /calendar_apps/:id(.:format)                                                        calendar_apps#update
+                DELETE /calendar_apps/:id(.:format)                                                   calendar_apps#destroy
 ```
 
 # Archive: Rails 7 App Installation Instructions
