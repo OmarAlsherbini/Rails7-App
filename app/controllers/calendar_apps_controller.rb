@@ -1,18 +1,16 @@
 class CalendarAppsController < ApplicationController
   before_action :set_calendar_app, only: %i[ show edit update destroy ]
   before_action :call_calendar, only: [:show]
+  before_action :authenticate_user!
 
   # GET /calendar_apps or /calendar_apps.json
   def index
     @calendar_apps = CalendarApp.all
-    #lol
     @all_location = request.location.data
     # @user_country = request.location.country
     # @user_city = request.location.city
     @user_country = @all_location["country"]
     @user_city = @all_location["city"]
-    #@location = "WRRRRYYYYYY"
-    # @user_ip_address = 
     @user_physical_address = request.location.address
     # @user_ip_address = request.location.ip
     @user_ip_address = @all_location["ip"]

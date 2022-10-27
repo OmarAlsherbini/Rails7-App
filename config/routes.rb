@@ -1,10 +1,45 @@
 Rails.application.routes.draw do
   resources :user_events
   resources :events
-  devise_for :users, controllers: {
-    sessions: 'users/sessions',
-    registrations: 'users/registrations'
-  }
+  # Devise (login/logout) for HTML requests
+  devise_for :users, defaults: { format: :html },
+    path: '',
+    path_names: { sign_up: 'register' },
+    controllers: {
+      sessions: 'users/sessions',
+      registrations: 'users/registrations',
+      confirmations: 'users/confirmations'
+    }
+  devise_scope :user do
+    get 'sign_in', to: 'devise/sessions#new'
+    get 'register', to: 'devise/registrations#new'
+    post 'register', to: 'devise/registrations#create'
+    delete 'sign_out', to: 'devise/sessions#destroy'
+    get 'confirmation/sent', to: 'confirmations#sent'
+    get 'confirmation/:confirmation_token', to: 'confirmations#show'
+    patch 'confirmation', to: 'confirmations#create'
+  end
+  
+  # API namespace, for JSON requests at /api/sign_[in|out]
+  namespace :api do
+    devise_for :users, defaults: { format: :json },
+      class_name: 'ApiUser',
+      skip: [:registrations, :invitations,
+        :passwords, :confirmations,
+        :unlocks],
+      path: '',
+      path_names: { sign_in: 'login',
+        sign_out: 'logout' }
+    
+    devise_scope :user do
+      get 'login', to: 'devise/sessions#new'
+      delete 'logout', to: 'devise/sessions#destroy'
+    end
+  end
+
+
+
+
   resources :month_apps
   resources :calendar_apps
   resources :test_children
@@ -31,3 +66,13 @@ Rails.application.routes.draw do
   # root "articles#index"
   root to: "calendar_apps#index"
 end
+
+
+
+
+
+
+
+
+
+
