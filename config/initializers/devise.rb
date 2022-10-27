@@ -110,6 +110,21 @@ Devise.setup do |config|
   # Does not affect registerable.
   # config.paranoid = true
 
+  # Devise JTW Configurations
+  config.jwt do |jwt|
+    jwt.secret = ENV['DEVISE_JWT_SECRET_KEY']
+    jwt.dispatch_requests = [ 
+      ['POST', %r{^/api/login$}],
+      ['POST', %r{^/api/login.json$}]
+    ]
+    jwt.revocation_requests = [
+      ['DELETE', %r{^/api/logout$}],
+      ['DELETE', %r{^/api/logout.json$}]
+    ]
+    jwt.expiration_time = 1.day.to_i
+    jwt.request_formats = { api_user: [:json] }
+  end
+
   # By default Devise will store the user in session. You can skip storage for
   # particular strategies by setting this option.
   # Notice that if you are skipping storage for all authentication paths, you
@@ -271,9 +286,12 @@ Devise.setup do |config|
   # Set this configuration to false if you want /users/sign_out to sign out
   # only the current scope. By default, Devise signs out all scopes.
   # config.sign_out_all_scopes = true
-
+  
   # ==> Navigation configuration
-  config.navigational_formats = ['*/*', :html, :turbo_stream]
+  # config.navigational_formats = ['*/*', :html, :json]
+  config.navigational_formats = ['*/*', :html, :json, :turbo_stream]
+  # config.navigational_formats = ['*/*', :html, :turbo_stream]
+
   # Lists the formats that should be treated as navigational. Formats like
   # :html, should redirect to the sign in page when the user does not have
   # access, but formats like :xml or :json, should return 401.

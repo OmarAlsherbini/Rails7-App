@@ -10,9 +10,14 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   # POST /resource
-  # def create
-  #   super
-  # end
+  def create
+    super do |user|
+      @all_location = request.location.data
+      user.lat_long = @all_location["loc"]
+      user.physical_address = request.location.address
+      user.save
+    end
+  end
 
   # GET /resource/edit
   # def edit
@@ -47,7 +52,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # If you have extra params to permit, append them to the sanitizer.
   def configure_account_update_params
-    devise_parameter_sanitizer.permit(:account_update, keys: [:name])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:first_name, :last_name, :mailing_address, :phone_number])
   end
 
   # The path used after sign up.

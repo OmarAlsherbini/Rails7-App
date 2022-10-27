@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_17_141021) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_27_112718) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -77,6 +77,21 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_17_141021) do
     t.boolean "include_current_month_in_past", default: true
   end
 
+  create_table "events", force: :cascade do |t|
+    t.bigint "month_app_id", null: false
+    t.string "name"
+    t.boolean "all_day", default: false, null: false
+    t.boolean "overwritable", default: false, null: false
+    t.datetime "start_date", null: false
+    t.datetime "end_date", null: false
+    t.integer "event_type", null: false
+    t.string "event_details"
+    t.integer "event_value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["month_app_id"], name: "index_events_on_month_app_id"
+  end
+
   create_table "month_apps", force: :cascade do |t|
     t.bigint "calendar_app_id", null: false
     t.string "name"
@@ -111,6 +126,21 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_17_141021) do
     t.bigint "child_two"
   end
 
+  create_table "user_events", force: :cascade do |t|
+    t.bigint "event_id", null: false
+    t.bigint "user_id", null: false
+    t.string "user_first_name"
+    t.string "user_last_name"
+    t.string "user_phone_number"
+    t.string "user_physical_address"
+    t.string "user_lat_long"
+    t.float "user_performance"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_user_events_on_event_id"
+    t.index ["user_id"], name: "index_user_events_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -119,7 +149,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_17_141021) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "first_name"
+    t.string "last_name"
+    t.string "mailing_address"
+    t.string "phone_number"
+    t.string "physical_address"
+    t.string "lat_long"
+    t.float "performance"
+    t.string "jti", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["jti"], name: "index_users_on_jti", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
@@ -137,8 +176,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_17_141021) do
   add_foreign_key "app_months", "app_calendars"
   add_foreign_key "app_months", "app_years"
   add_foreign_key "app_years", "app_calendars"
+  add_foreign_key "events", "month_apps"
   add_foreign_key "month_apps", "calendar_apps"
   add_foreign_key "test_children", "test_parents"
   add_foreign_key "test_parents", "test_children", column: "child_one"
   add_foreign_key "test_parents", "test_children", column: "child_two"
+  add_foreign_key "user_events", "events"
+  add_foreign_key "user_events", "users"
 end

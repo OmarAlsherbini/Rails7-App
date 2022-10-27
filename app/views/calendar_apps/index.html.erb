@@ -5,10 +5,15 @@
 
   <div class="flex justify-between items-center">
     <h1 class="font-bold text-4xl">Calendar apps</h1>
-    <%= link_to 'New calendar app', new_calendar_app_path, class: "rounded-lg py-3 px-5 bg-blue-600 text-white block font-medium" %>
+    <% if @calendar_apps.blank? %>
+      <%= link_to 'New calendar app', new_calendar_app_path, class: "rounded-lg py-3 px-5 bg-blue-600 text-white block font-medium" %>
+    <% end %>
   </div>
   <div>
-  <p><b>Location:</b> <%= @user_city %>, <%= @user_country %></p>
+  <% if current_user %>
+    <%= current_user.to_json %>
+  <% end %>
+  
   </div>
   <div id="calendar_apps" class="min-w-full">
     <%= render @calendar_apps %>
