@@ -1,4 +1,239 @@
-# Insstallation Instructions
+# Events App: https://rails-events-geocoder-devise.herokuapp.com/
+
+## Gems Installed
+```
+gem 'devise'
+gem 'geocoder'
+gem 'devise-jwt'
+gem 'fast_jsonapi'
+```
+
+## Geocoder Component
+The app uses `Geocoder`to get the physical address and the Lat-Long coordinates of the user, generally within 20 minutes by car of accuracy, and workable with Windscibe VPN browser extension. <br/>
+Th geocoder component doesn't work in development environment however, only in production. Thus, the app is also deployed to Heroku for functionality testing <br/>
+**Heroku deployment:** https://rails-events-geocoder-devise.herokuapp.com/ <br/>
+The user's location info is updated and stored into his `User` data upon signup, every login and every event creation done by them.
+
+## Devise & Devise JWT Authentication
+The app allows for user registration and login/logout via `devise` gem. However, this alone is meant to be used in HTML format, and doesn't quite support JSON requests with `Bearer` tokens to authenticate API JSON requests to access methods requiring user authentication. <br/>
+To fix that, another gem, `devise-jwt` is also installed, and while Rails project with `devise-jwt` would generally require an API-only app created from scratch for it, adjustments had to be made to its integration to make it compatible with the current HTML-based Rails app, following [this JWT Logins on Existing HTML Rails 5 App tutorial](https://medium.com/@brentkearney/json-web-token-jwt-and-html-logins-with-devise-and-ruby-on-rails-5-9d5e8195193d), with further modifications to the tutorials implementation to make it compatible with Rails 7 and its Turbo Stream components. <br/>
+Thus, a lot of edits were performed to the original default Devise `User` controllers and models, in addition to further changes to `devise.rb`, `routes.rb` and even the `application_controller.rb` itself. <br/>
+
+## Events App
+The app allows a user to create an `Event` of `type 1` (scheduled) with another user based on their schedules, or create an `Event` of `type 0` (blocked) for his own calendar. <br/>
+> Events cannot overlap based on their `start_date`s and `end_date`s unless explicitely specified as such by an `overwritable` flag which is `false` by default. Creating an `overwritable` `Event` of `type 0` isn't allowed. <br/>
+> Creating an `Event` of `type 1` would create 2 `UserEvent`s for the **host** user and the **current** user (logged in user). The `UserEvent` of one user contain the info of the other user with which the `Event` is scheduled, including his name, location info and performance (initialized as `nil`). <br/>
+> Each created `Event` is associated with a particular `MonthApp` through `month_app_id`. For example, A created `Event` with a `start_date` in November 2022 created in October 2022 **must have** a `month_app_id` of 19, assuming that the `CalendarApp` is created with the default settings. Specifying anything different than this for the request will result in a `HTTP Error 400 Bad Request`. <br/>
+> Created events also allow for `datetime` `start_date`s and `end_date`s, meaning that the overlap logic extends to the single minute as of now. The frontend integration can modulate that further for 15 minutes modularity.
+> `all_day` flags also exists for the frontend integration in case they want to modulate that even further into a full day event without hours.
+> An **`eventData`** JSON object exist for a `User`'s list of `Event`s and `UserEvent`s through the associated `get_user_events` method.
+
+## Methods/Endpoints
+
+### Signup
+#### Routes List
+```
+                register GET    /register(.:format)                                                      devise/registrations#new
+                POST   /register(.:format)                                                                  devise/registrations#create
+                cancel_user_registration GET    /cancel(.:format)                             users/registrations#cancel {:format=>:html}
+                new_user_registration GET    /register(.:format)                               users/registrations#new {:format=>:html}
+                edit_user_registration GET    /edit(.:format)                                      users/registrations#edit {:format=>:html}
+                user_registration PATCH  /                                                                 users/registrations#update {:format=>:html}
+                PUT    /                                                                                                users/registrations#update {:format=>:html}
+                DELETE /                                                                                           users/registrations#destroy {:format=>:html}
+                POST   /                                                                                              users/registrations#create {:format=>:html}
+```
+#### Example `POST` Request to `/register` Via Postman
+```
+{
+    "user": {
+        "email": "alsherbini.omar@gmail.com",
+        "password": "railsPro2022",
+        "password_confirmation": "railsPro2022"
+    }
+}
+```
+### Login
+#### Routes List (JSON for Devise JWT)
+```
+                new_api_user_session GET    /api/login(.:format)                             api/sessions#new {:format=>:json}
+                api_user_session POST   /api/login(.:format)                                     api/sessions#create {:format=>:json}
+                destroy_api_user_session DELETE /api/logout(.:format)                  api/sessions#destroy {:format=>:json}
+                api_login GET    /api/login(.:format)                                                  api/devise/sessions#new
+                api_logout DELETE /api/logout(.:format)                                          api/devise/sessions#destroy
+```
+#### Routes List (HTML for Devise)
+```
+                sign_in GET    /sign_in(.:format)                                                        devise/sessions#new
+                sign_out DELETE /sign_out(.:format)                                                devise/sessions#destroy
+                new_user_session GET    /sign_in(.:format)                                       users/sessions#new {:format=>:html}
+                user_session POST   /sign_in(.:format)                                               users/sessions#create {:format=>:html}
+                destroy_user_session DELETE /sign_out(.:format)                            users/sessions#destroy {:format=>:html}
+
+```
+#### Example Login `POST` Request to `/api/login` Via Postman
+```
+{
+    "api_user": {
+        "email": "alsherbini.omar@gmail.com",
+        "password": "railsPro2022"
+    }
+}
+```
+#### Response
+```
+{
+    "success": true,
+    "jwt": "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI0ZGI5YjA2Mi05NWJmLTRkMGUtODhjMC0yYjBkOTk1NGQxNzIiLCJzdWIiOiIyIiwic2NwIjoiYXBpX3VzZXIiLCJhdWQiOm51bGwsImlhdCI6MTY2Njg3NDcyMSwiZXhwIjoxNjY2OTYxMTIxfQ.GZvZi87_DncWy0LlsxMZEHCZ3ReTPUh4XdxAvviFmC0",
+    "response": "Authentication successful"
+}
+```
+### Password & Confirmation Routes List
+```
+                new_user_password GET    /password/new(.:format)                         devise/passwords#new {:format=>:html}
+                edit_user_password GET    /password/edit(.:format)                          devise/passwords#edit {:format=>:html}
+                user_password PATCH  /password(.:format)                                       devise/passwords#update {:format=>:html}
+                PUT    /password(.:format)                                                                   devise/passwords#update {:format=>:html}
+                POST   /password(.:format)                                                                  devise/passwords#create {:format=>:html}
+                confirmation_sent GET    /confirmation/sent(.:format)                        confirmations#sent
+                GET    /confirmation/:confirmation_token(.:format)                            confirmations#show
+                confirmation PATCH  /confirmation(.:format)                                      confirmations#create
+```
+### Calendar Routes
+``
+                month_apps GET    /month_apps(.:format)                                           month_apps#index
+                POST   /month_apps(.:format)                                                               month_apps#create
+                new_month_app GET    /month_apps/new(.:format)                             month_apps#new
+                edit_month_app GET    /month_apps/:id/edit(.:format)                         month_apps#edit
+                month_app GET    /month_apps/:id(.:format)                                        month_apps#show
+                PATCH  /month_apps/:id(.:format)                                                        month_apps#update
+                PUT    /month_apps/:id(.:format)                                                           month_apps#update
+                DELETE /month_apps/:id(.:format)                                                      month_apps#destroy
+                calendar_apps GET    /calendar_apps(.:format)                                     calendar_apps#index
+                POST   /calendar_apps(.:format)                                                            calendar_apps#create
+                new_calendar_app GET    /calendar_apps/new(.:format)                      calendar_apps#new
+                edit_calendar_app GET    /calendar_apps/:id/edit(.:format)                  calendar_apps#edit
+                calendar_app GET    /calendar_apps/:id(.:format)                                 calendar_apps#show
+                PATCH  /calendar_apps/:id(.:format)                                                     calendar_apps#update
+                PUT    /calendar_apps/:id(.:format)                                                        calendar_apps#update
+                DELETE /calendar_apps/:id(.:format)                                                   calendar_apps#destroy
+```
+### Events & UserEvent
+#### Routes List
+```
+                get_user_events GET    /events/get_user_events/:id(.:format)              events#get_user_events
+                events GET    /events(.:format)                                                              events#index
+                POST   /events(.:format)                                                                        events#create
+                new_event GET    /events/new(.:format)                                               events#new
+                edit_event GET    /events/:id/edit(.:format)                                           events#edit
+                event GET    /events/:id(.:format)                                                          events#show
+                PATCH  /events/:id(.:format)                                                                 events#update
+                PUT    /events/:id(.:format)                                                                    events#update
+                DELETE /events/:id(.:format)                                                                events#destroy                         
+                user_events GET    /user_events(.:format)                                             user_events#index
+                POST   /user_events(.:format)                                                                user_events#create
+                new_user_event GET    /user_events/new(.:format)                              user_events#new
+                edit_user_event GET    /user_events/:id/edit(.:format)                          user_events#edit
+                user_event GET    /user_events/:id(.:format)                                         user_events#show
+                PATCH  /user_events/:id(.:format)                                                         user_events#update
+                PUT    /user_events/:id(.:format)                                                            user_events#update
+                DELETE /user_events/:id(.:format)                                                       user_events#destroy
+```
+#### Example: Create Event `POST` Request to `/events.json` Via Postman
+```
+{
+    "event": {
+        "month_app_id": 21,
+        "user_id": 1,
+        "name": "Postman Event",
+        "overwritable": false,
+        "all_day": false,
+        "start_date": "2023-1-28T12:59:00.000Z",
+        "end_date": "2023-2-28T12:59:00.000Z",
+        "event_type": "1",
+        "event_details": "I created this event via Postman JSON format!",
+        "event_value": 312
+    }
+}
+```
+#### Response
+```
+{
+    "id": 2,
+    "month_app_id": 21,
+    "name": "Postman Event",
+    "all_day": false,
+    "start_date": "2023-01-28T12:59:00.000Z",
+    "end_date": "2023-02-28T12:59:00.000Z",
+    "event_type": 1,
+    "event_details": "I created this event via Postman JSON format!",
+    "event_value": 312,
+    "created_at": "2022-10-27T13:33:40.812Z",
+    "updated_at": "2022-10-27T13:33:40.812Z",
+    "url": "http://127.0.0.1:3000/events/2.json"
+}
+```
+In addition to 2 more created `UserEvent`s. 
+#### UserEvent Example: `GET /user_events/5.json`
+```
+{
+  "id": 3,
+  "event_id": 2,
+  "user_id": 1,
+  "user_physical_address": "Milan 20152, IT",
+  "user_lat_long": "45.4618,9.1406",
+  "user_performance": null,
+  "created_at": "2022-10-27T13:33:40.866Z",
+  "updated_at": "2022-10-27T13:33:40.866Z",
+  "url": "http://127.0.0.1:3000/user_events/3.json"
+}
+```
+#### `eventData` Object Example from: `GET /events/get_user_events/1.json`
+```
+[
+  {
+    "startDate": "2022-11-05T12:00:00.000Z",
+    "endDate": "2022-11-05T15:30:00.000Z",
+    "eventType": 1,
+    "eventDetails": "An important Meeting with Mezo",
+    "userFirstName": "Mezo",
+    "userLastName": "Robenson",
+    "userPhoneNumber": "+201067536168",
+    "userPhysicalAddress": "Frankfurt am Main 60326, DE",
+    "userLatLong": "50.1025,8.6299",
+    "userPerformance": null,
+    "eventValue": 2000
+  },
+  {
+    "startDate": "2022-12-18T00:01:00.000Z",
+    "endDate": "2022-12-18T23:59:00.000Z",
+    "eventType": 1,
+    "eventDetails": "Celebrating Sherbo's Birthday!",
+    "userFirstName": "Sherbo",
+    "userLastName": "Zewailian",
+    "userPhoneNumber": "+201154168711",
+    "userPhysicalAddress": "Oslo 0001, NO",
+    "userLatLong": "59.9127,10.7461",
+    "userPerformance": null,
+    "eventValue": 10000
+  },
+  {
+    "startDate": "2022-11-01T00:00:00.000Z",
+    "endDate": "2022-11-04T23:59:00.000Z",
+    "eventType": 0,
+    "eventDetails": "No work on these days! JK I work all the time!",
+    "userFirstName": null,
+    "userLastName": null,
+    "userPhoneNumber": null,
+    "userPhysicalAddress": null,
+    "userLatLong": null,
+    "userPerformance": null,
+    "eventValue": null
+  }
+]
+```
+
+# Archive: Rails 7 App Installation Instructions
 
 ## 0) Prerequisites
 ```
