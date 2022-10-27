@@ -132,6 +132,7 @@ class EventsController < ApplicationController
               
             end
           end
+          @event.save
           # Create the event for the current user.
           UserEvent.create(event_id: @event.id, user_id: current_user.id)
         else
