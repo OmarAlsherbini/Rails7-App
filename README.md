@@ -361,6 +361,10 @@ And then:
 ```
 ./bin/dev
 ```
+In case `"webpack" not found`:
+```
+yarn install --check-files
+```
 ## 9) Test the Posts App
 Head to ```http://127.0.0.1:3000/posts/```, styled by Tailwind CSS. <br/>
 There, you will see a random word popping out of the Redis cache every time you refresh with a second expiry. You can check the redis behavior by opening a new terminal in the same directory and running:
