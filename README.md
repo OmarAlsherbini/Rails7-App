@@ -228,6 +228,21 @@ In addition to 2 more created `UserEvent`s.
                 PUT    /calendar_apps/:id(.:format)                                                        calendar_apps#update
                 DELETE /calendar_apps/:id(.:format)                                                   calendar_apps#destroy
 ```
+# Notes
+## CORS Policy
+CORS Policy allows all origins currently and can be changed from here: `config/initializers/cors.rb`
+```
+Rails.application.config.middleware.insert_before 0, Rack::Cors do
+	allow do
+		origins '*' # your client's domain
+
+		resource '*',
+		headers: :any,
+		methods: [:get, :post, :put, :patch, :delete, :options, :head]
+	end
+end
+```
+
 
 # Archive: Rails 7 App Installation Instructions
 
