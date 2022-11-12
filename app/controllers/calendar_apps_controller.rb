@@ -15,6 +15,8 @@ class CalendarAppsController < ApplicationController
     # @user_ip_address = request.location.ip
     @user_ip_address = @all_location["ip"]
     @user_lat_long = @all_location["loc"]
+    p "WWWWTTTTTTTTTTTTTTTYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY!!!!"
+    puts "WARDEN TOKEN: #{request.env['warden-jwt_auth.token']}"
     # @user_lat = request.location.lat
     # @user_long = request.location.long
     # @user_lat_long = request.location.data.loc
