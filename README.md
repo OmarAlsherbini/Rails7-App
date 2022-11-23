@@ -11,6 +11,21 @@ gem 'fast_jsonapi'
 The app allows for user registration and login/logout via `devise` gem. However, this alone is meant to be used in HTML format, and doesn't quite support JSON requests with `Bearer` tokens to authenticate API JSON requests to access methods requiring user authentication. <br/>
 To fix that, another gem, `devise-jwt` is also installed, and while Rails project with `devise-jwt` would generally require an API-only app created from scratch for it, adjustments had to be made to its integration to make it compatible with the current HTML-based Rails app, following [this JWT Logins on Existing HTML Rails 5 App tutorial](https://medium.com/@brentkearney/json-web-token-jwt-and-html-logins-with-devise-and-ruby-on-rails-5-9d5e8195193d), with further modifications to the tutorials implementation to make it compatible with Rails 7 and its Turbo Stream components. <br/>
 Thus, a lot of edits were performed to the original default Devise `User` controllers and models, in addition to further changes to `devise.rb`, `routes.rb` and even the `application_controller.rb` itself. <br/>
+
+### Configure JWT Secret Key
+To generate a secret key for JWT, insert the command:
+```rake secret```
+Then, insert it in the Rails encrypted credentials file as follows:
+```
+EDITOR=nano rails credentials:edit
+```
+And add the following:
+```
+devise:
+  jwt_secred: <your_rake_secret>
+```
+
+
 ## Geocoder Component
 The app uses `Geocoder`to get the physical address and the Lat-Long coordinates of the user, generally within 20 minutes by car of accuracy, and workable with Windscibe VPN browser extension. <br/>
 Th geocoder component doesn't work in development environment however, only in production. Thus, the app is also deployed to Heroku for functionality testing <br/>
