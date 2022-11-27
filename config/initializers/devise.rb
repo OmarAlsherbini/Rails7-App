@@ -111,8 +111,15 @@ Devise.setup do |config|
   # config.paranoid = true
 
   # Devise JTW Configurations
+
+   # config.secret_key = '9adf0169e7d6cfa7569499c6740142b8dd69553f8d9d47106daedecbf0de56d5b42cc3ccbf68a9d13e05c7738e6da4294b504dd66bff09f9a3cdae00b04b749b'
+  # config.jwt do |jwt|
+  #   jwt.secret = Rails.application.credentials.devise[:jwt_secret_key]
+  # end
+
   config.jwt do |jwt|
-    jwt.secret = ENV['DEVISE_JWT_SECRET_KEY']
+    #jwt.secret = ENV['DEVISE_JWT_SECRET_KEY']
+    jwt.secret = Rails.application.credentials.devise[:jwt_secret_key]
     jwt.dispatch_requests = [ 
       ['POST', %r{^/api/login$}],
       ['POST', %r{^/api/login.json$}]
@@ -121,7 +128,8 @@ Devise.setup do |config|
       ['DELETE', %r{^/api/logout$}],
       ['DELETE', %r{^/api/logout.json$}]
     ]
-    jwt.expiration_time = 1.day.to_i
+    #jwt.expiration_time = 1.day.to_i
+    jwt.expiration_time = ENV['JWT_EXPIRATION_TIME_MINUTES'].to_i.minutes.to_i
     jwt.request_formats = { api_user: [:json] }
   end
 

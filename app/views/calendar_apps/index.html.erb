@@ -11,7 +11,10 @@
   </div>
   <div>
   <% if current_user %>
+    <p class="py-2 px-3 bg-green-50 mb-5 text-brown-500 font-medium rounded-lg inline-block">Logged In User Info:</p>
     <%= current_user.to_json %>
+    <p class="py-2 px-3 bg-green-50 mb-5 text-brown-500 font-medium rounded-lg inline-block">Logged In User JWT:</p>
+    <%= @user.to_json %>
   <% end %>
   
   </div>
