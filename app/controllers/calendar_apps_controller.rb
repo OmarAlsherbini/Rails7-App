@@ -9,23 +9,12 @@ class CalendarAppsController < ApplicationController
     
     if current_user
       @all_location = request.location.data
-      # @user_country = request.location.country
-      # @user_city = request.location.city
       @user_country = @all_location["country"]
       @user_city = @all_location["city"]
       @user_physical_address = request.location.address
-      # @user_ip_address = request.location.ip
       @user_ip_address = @all_location["ip"]
       @user_lat_long = @all_location["loc"]
-      p "WWWWTTTTTTTTTTTTTTTYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY!!!!"
-      puts "WARDEN TOKEN: #{request.env['warden-jwt_auth.token']}"
-      #@user = get_user_from_token
     end
-    
-    # @user_lat = request.location.lat
-    # @user_long = request.location.long
-    # @user_lat_long = request.location.data.loc
-  end
 
   # GET /calendar_apps/1 or /calendar_apps/1.json
   def show
@@ -113,11 +102,5 @@ class CalendarAppsController < ApplicationController
       params.require(:calendar_app).permit(:n_mon_span, :n_yr_span, :include_current_month_in_past)
     end
 
-    # def get_user_from_token
-    #   jwt_payload = JWT.decode(request.headers['Authorization'].split(' ')[1],
-    #                            Rails.application.credentials.devise[:jwt_secret_key]).first
-    #   user_id = jwt_payload['sub']
-    #   User.find(user_id.to_s)
-    # end
 end
 
