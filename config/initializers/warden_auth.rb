@@ -1,5 +1,6 @@
 Warden::JWTAuth.configure do |config|
-  config.secret = ENV['DEVISE_JWT_SECRET_KEY']
+  #config.secret = ENV['DEVISE_JWT_SECRET_KEY']
+  config.secret = Rails.application.credentials.devise[:jwt_secret_key]
   config.dispatch_requests = [
     ['POST', %r{^/api/login$}],
     ['POST', %r{^/api/login.json$}]

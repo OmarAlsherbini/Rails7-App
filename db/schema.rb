@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_27_112718) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_27_122836) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -89,7 +89,19 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_27_112718) do
     t.integer "event_value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "start_day"
+    t.date "end_day"
+    t.time "start_time"
+    t.time "end_time"
     t.index ["month_app_id"], name: "index_events_on_month_app_id"
+  end
+
+  create_table "jwt_denylist", force: :cascade do |t|
+    t.string "jti", null: false
+    t.datetime "exp", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["jti"], name: "index_jwt_denylist_on_jti"
   end
 
   create_table "month_apps", force: :cascade do |t|
