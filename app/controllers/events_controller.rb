@@ -15,12 +15,12 @@ class EventsController < ApplicationController
   # GET /events/new
   def new
     @event = Event.new
-    @timeslots_available = get_available_timeslots
+    @timeslots_available = Event.get_available_timeslots
   end
 
   # GET /events/1/edit
   def edit
-    @timeslots_available = get_available_timeslots
+    @timeslots_available = Event.get_available_timeslots
   end
 
   # POST /events or /events.json
