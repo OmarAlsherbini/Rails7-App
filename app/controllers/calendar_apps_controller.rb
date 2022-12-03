@@ -2,6 +2,14 @@ class CalendarAppsController < ApplicationController
   before_action :set_calendar_app, only: %i[ show edit update destroy ]
   before_action :call_calendar, only: [:show]
   before_action :authenticate_user!
+  # before_action do
+  #   if !User.validate_jwt_cookie(cookies, current_user)
+  #     respond_to do |format|
+  #       format.html { redirect_to sign_in_url, notice: "You need to sign in or sign up before continuing." }
+  #       format.json { render status 401, json: { response: "Authentication failed: invalid or non-existing authentication token." } }
+  #     end
+  #   end
+  # end
 
   # GET /calendar_apps or /calendar_apps.json
   def index
@@ -15,6 +23,7 @@ class CalendarAppsController < ApplicationController
       @user_ip_address = @all_location["ip"]
       @user_lat_long = @all_location["loc"]
     end
+  end
 
   # GET /calendar_apps/1 or /calendar_apps/1.json
   def show
@@ -103,4 +112,3 @@ class CalendarAppsController < ApplicationController
     end
 
 end
-

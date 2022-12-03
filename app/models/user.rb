@@ -23,8 +23,16 @@ class User < ApplicationRecord
     return JWT.decode(cookies.signed[:jwt], Rails.application.credentials.devise[:jwt_secret_key]).first
   end
 
+  def self.decode_current_jwt_token(jwt_token)
+    return JWT.decode(jwt_token, Rails.application.credentials.devise[:jwt_secret_key]).first
+  end
+
   def self.get_current_user_from_jwt(cookies)
-    return self.decode_current_jwt(cookies)['sub']
+    return self.decode_current_jwt(cookies)['sub'].to_i
+  end
+
+  def self.get_current_user_from_jwt_token(jwt_token)
+    return self.decode_current_jwt_token(jwt_token)['sub'].to_i
   end
 
   def self.is_jwt_valid(cookies)
@@ -40,8 +48,20 @@ class User < ApplicationRecord
     end
   end
 
+  def self.is_jwt_token_valid(jwt_token)
+    begin
+      if(self.get_current_user_from_jwt_token(jwt_token))
+        return true
+      else
+        return false
+      end
+    rescue => e
+      p "Exception handled during User.decoder_current_jwt_token: #{e}"
+      return false
+    end
+  end
+
   def self.set_a_cookie(cookies, c_name, c_value, is_signed = false, is_httponly = false, expiration_time = 1440)
-    p "set_a_cookie: #{cookies}"
     if is_signed
       cookies.signed[c_name] = {
         value:  c_value,
@@ -55,9 +75,6 @@ class User < ApplicationRecord
         expires: expiration_time.minutes.from_now
       }
     end
-    p "After set_a_cookie: #{cookies}"
-    # new_cookies = cookies
-    # return new_cookies
   end
 
   def self.delete_a_cookie(cookies, c_name, is_httponly = false, is_signed = false)
@@ -68,13 +85,38 @@ class User < ApplicationRecord
       httponly: is_httponly,
       expires: Time.at(0)
     })
-    #new_cookies = ActionDispatch::Cookies::CookieJar.new
-    # new_cookies = cookies
-    # return new_cookies
-  
+  end
 
-    # options.stringify_keys!
-    # set_cookie(options.merge("name" => c_name.to_s, "is_signed" => is_signed, "httponly" => is_httponly, "value" => "", "expires" => Time.at(0)))
+  def self.validate_jwt_cookie(cookies, current_user)
+    if self.is_jwt_valid(cookies)
+      if current_user
+        if self.get_current_user_from_jwt(cookies) == current_user.id
+          return true
+        else
+          return false
+        end
+      else
+        return false
+      end
+    else
+      return false
+    end
+  end
+
+  def self.validate_jwt_cookie(jwt_token, current_user)
+    if self.is_jwt_token_valid(jwt_token)
+      if current_user
+        if self.get_current_user_from_jwt_token(jwt_token) == current_user.id
+          return true
+        else
+          return false
+        end
+      else
+        return false
+      end
+    else
+      return false
+    end
   end
 
 end

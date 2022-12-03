@@ -24,17 +24,27 @@ Rails.application.routes.draw do
   namespace :api do
     devise_for :users, defaults: { format: :json },
       class_name: 'ApiUser',
-      skip: [:registrations, :invitations,
+      skip: [:invitations,
         :passwords, :confirmations,
         :unlocks],
       path: '',
       path_names: { sign_in: 'login',
-        sign_out: 'logout' }
-    
+        sign_out: 'logout',
+        sign_up: 'register' }
     devise_scope :user do
       get 'login', to: 'devise/sessions#new'
       delete 'logout', to: 'devise/sessions#destroy'
     end
+    get 'register', to: 'registrations#new'
+    post 'register', to: 'registrations#create'
+    delete 'register', to: 'registrations#destroy'
+
+    post 'model_find', to: 'get_model#show_with_id'
+    post 'model_where', to: 'get_model#show_where'
+    post 'model_create', to: 'get_model#create'
+    post 'model_update', to: 'get_model#update'
+    post 'model_destroy', to: 'get_model#destroy'
+    
   end
 
 

@@ -1,9 +1,24 @@
 class EventsController < ApplicationController
   before_action :set_event, only: %i[ show edit update destroy ]
   before_action :authenticate_user!
+  # before_action do
+  #   if !User.validate_jwt_cookie(cookies, current_user)
+  #     respond_to do |format|
+  #       format.html { redirect_to sign_in_url, notice: "You need to sign in or sign up before continuing." }
+  #       format.json { render status: 401, json: { response: "Authentication failed: invalid or non-existing authentication token." } }
+  #     end
+  #   end
+  # end
+  
 
   # GET /events or /events.json
   def index
+    # if !User.validate_jwt_cookie(cookies, current_user)
+    #   respond_to do |format|
+    #     format.html { redirect_to sign_in_url, notice: "You need to sign in to access the requested resources." }
+    #     format.json { render :json, {"success": false, "message": "You need to sign in to access the requested resources."}, status: :unauthorized }
+    #   end
+    # end
     @events = Event.all
     @jwt_cookie = cookies.signed[:jwt]
   end
@@ -103,7 +118,7 @@ class EventsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+    # Use callbacks to share common setup or constraints between actions.    
     def set_event
       @event = Event.find(params[:id])
     end
