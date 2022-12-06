@@ -10,9 +10,9 @@ class Api::SessionsController < Devise::SessionsController
     end
 
     
-    render status: 400, json: {
+    render status: 401, json: {
       success: false,
-      response: "Incorrect username or password!"
+      response: "You need to sign in or sign up before continuing."
     }
 
   end
@@ -69,7 +69,7 @@ class Api::SessionsController < Devise::SessionsController
             render json: {
               success: true,
               jwt: current_token,
-              response: "Authentication successful", format: request.format
+              response: "Authentication successful"
             }
           }
         end

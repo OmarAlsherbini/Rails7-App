@@ -16,7 +16,7 @@ class Api::GetModelController < ApplicationController
       render status: 200, json: {
         success: true,
         response: "#{model_str} object retreived successfully.",
-        object: object.to_json
+        object: object
       }
     rescue => e
       render status: 400, json: {
@@ -36,13 +36,13 @@ class Api::GetModelController < ApplicationController
     # }
 
     model_str = request["model"].split(' ')[0].capitalize()
-    params = JSON.parse(request["params"], symbolize_names: true)
+    params = request["params"]
     begin
       object = eval("#{model_str}.where(#{params})")
       render status: 200, json: {
         success: true,
         response: "#{model_str} object retreived successfully.",
-        object: object.to_json
+        object: object
       }
     rescue => e
       render status: 400, json: {
@@ -62,12 +62,13 @@ class Api::GetModelController < ApplicationController
     # }
 
     model_str = request["model"].split(' ')[0].capitalize()
-    params = JSON.parse(request["params"], symbolize_names: true)
+    params = request["params"]
     begin
       object = eval("#{model_str}.create(#{params})")
       render status: 200, json: {
         success: true,
-        response: "#{model_str} object created successfully."
+        response: "#{model_str} object created successfully.",
+        object: object
       }
     rescue => e
       render status: 400, json: {
@@ -90,13 +91,14 @@ class Api::GetModelController < ApplicationController
 
     model_str = request["model"].split(' ')[0].capitalize()
     object_id = request["id"]
-    params = JSON.parse(request["params"], symbolize_names: true)
+    params = request["params"]
     begin
       object = eval("#{model_str}.find(#{object_id})")
       object.update(params)
       render status: 200, json: {
         success: true,
-        response: "#{model_str} object updated successfully."
+        response: "#{model_str} object updated successfully.",
+        object: object
       }
     rescue => e
       render status: 400, json: {
@@ -118,7 +120,7 @@ class Api::GetModelController < ApplicationController
     model_str = request["model"].split(' ')[0].capitalize()
     object_id = request["id"]
     begin
-      object = eval("#{model_str}.find(#{object_id})")
+      object = eval("#{model_str}.find(#{object_id.to_i})")
       object.delete
       render status: 200, json: {
         success: true,
