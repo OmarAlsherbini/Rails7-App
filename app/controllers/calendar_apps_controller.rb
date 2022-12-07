@@ -101,7 +101,8 @@ class CalendarAppsController < ApplicationController
       date_today = Time.current
       @created_datetime = cal_object.created_at
       @last_updated = cal_object.updated_at
-      @month_elapsed = ((date_today - @last_updated)/60/60/24/30).to_i
+      @month_elapsed = (date_today.year - @last_updated.year)*12 + (date_today.month - @last_updated.month)  
+    
       @calendar = CalendarApp.call_from_controller(params[:id], @month_elapsed)
     end
 

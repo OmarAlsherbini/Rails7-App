@@ -66,13 +66,14 @@ class Event < ApplicationRecord
               form_no_errors = false
               event.errors.add(:user_id, message: "does not exist!")
               
-            elsif event_params[:user_id] == current_user.id.to_s
+            elsif event_params[:user_id].to_s == current_user.id.to_s
               
               form_no_errors = false
               event.errors.add(:user_id, message: "is the same as the logged in user!")
   
             else
               host_user = User.find(event_params[:user_id])
+              
               # Check event conflicts for the host user.
               all_host_events = UserEvent.where(user_id: event_params[:user_id])
               for host_event in all_host_events
@@ -94,13 +95,6 @@ class Event < ApplicationRecord
                   
                 end
               end
-              if form_no_errors
-                event.save
-                
-                UserEvent.create(event_id: event.id, user_id: event_params[:user_id], user_first_name: current_user.first_name, user_last_name: current_user.last_name, user_phone_number: current_user.phone_number, user_physical_address: current_user.physical_address, user_lat_long: current_user.lat_long)
-                # Create the event for the current user.
-                UserEvent.create(event_id: event.id, user_id: current_user.id, user_first_name: host_user.first_name, user_last_name: host_user.last_name, user_phone_number: host_user.phone_number, user_physical_address: host_user.physical_address, user_lat_long: host_user.lat_long)
-              end
               
             end
   
@@ -110,12 +104,12 @@ class Event < ApplicationRecord
             
             
           end
+
         elsif event_params[:event_type] == "0"
           # You can't allow a type 0 event to be overwritable!
           if event_params[:overwritable] == "1"
             form_no_errors = false
             event.errors.add(:overwritable, message: ": Creating an overwritable type 0 event is not allowed!")
-            
           end
   
           # Check event conflicts for the current user.
@@ -127,18 +121,28 @@ class Event < ApplicationRecord
               
             end
           end
-          event.save
-          # Create the event for the current user.
-          UserEvent.create(event_id: event.id, user_id: current_user.id)
+          
         else
           form_no_errors = false
           event.errors.add(:event_type, message: ": Unidentified event type! Allowed types are 0 for blocked events and 1 for reserved events.")          
         end
         
       end
+      if form_no_errors
+        if event_params[:event_type] == "0"
+          event.save
+          # Create the event for the current user.
+          UserEvent.create(event_id: event.id, user_id: current_user.id)
+        else
+          event.save
+          UserEvent.create(event_id: event.id, user_id: event_params[:user_id], user_first_name: current_user.first_name, user_last_name: current_user.last_name, user_phone_number: current_user.phone_number, user_physical_address: current_user.physical_address, user_lat_long: current_user.lat_long)
+          # Create the event for the current user.
+          UserEvent.create(event_id: event.id, user_id: current_user.id, user_first_name: host_user.first_name, user_last_name: host_user.last_name, user_phone_number: host_user.phone_number, user_physical_address: host_user.physical_address, user_lat_long: host_user.lat_long)
+        end
+
+      end
       
     end
-    puts "Event errors: #{event.errors}"
     return form_no_errors
   end
 
@@ -254,7 +258,7 @@ class Event < ApplicationRecord
           # You can't allow a type 0 event to be overwritable!
           if event_params[:overwritable] == "1"
             form_no_errors = false
-            event.errors.add(:overwritable, message: ": Creating an overwritable type 0 event is not allowed!")
+            event.errors.add(:event_type, message: ": Creating an overwritable type 0 event is not allowed!")
             
           end
   

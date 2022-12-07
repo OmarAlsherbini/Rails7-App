@@ -11,6 +11,16 @@ RSpec.describe CalendarApp, type: :model do
   
   begin
     cal = CalendarApp.find(1)
+    # Update if not updated:
+    date_today = Time.current
+    last_updated = cal.updated_at
+    months_elapsed = (date_today.year - last_updated.year)*12 + (date_today.month - last_updated.month)    
+    
+    if months_elapsed > 0
+      months_all = MonthApp.where(calendar_app_id: cal[:id]).order(:id)
+      CalendarApp.update_cal(months_elapsed, months_all)
+    end
+
   rescue
     cal = CalendarApp.create()
   ensure
