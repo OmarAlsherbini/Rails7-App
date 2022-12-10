@@ -13,7 +13,7 @@ RSpec.describe Event, type: :model do
   # Test Parameters
   n_users = 10
   n_user_events_min = 5
-  n_user_events_max = 50
+  n_user_events_max = 30
   t_event_factor_min = 1
   t_event_factor_max = 32
   month_range_next = 1
@@ -73,10 +73,16 @@ RSpec.describe Event, type: :model do
   users_built = []
 
   # Initialize users
+  n_seq = 141
   for indx in 0...n_users
-    rand_user = FactoryBot.create(:user)
+    begin
+      rand_user = FactoryBot.create(:user)
+    rescue ActiveRecord::RecordInvalid
+      rand_user = User.find_by(email: "test_user#{n_seq}@example.com")
+    end
     users_ids.append(rand_user[:id])
     users_built.append(rand_user)
+    n_seq = n_seq + 1
   end
 
   # Initialize calendar
