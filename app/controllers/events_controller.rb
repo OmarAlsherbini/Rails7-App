@@ -30,18 +30,18 @@ class EventsController < ApplicationController
   # GET /events/new
   def new
     @event = Event.new
-    @timeslots_available = Event.get_available_timeslots
+    @timeslots_available = Event.get_available_timeslots(ENV['EVENT_MODULARITY'])
   end
 
   # GET /events/1/edit
   def edit
-    @timeslots_available = Event.get_available_timeslots
+    @timeslots_available = Event.get_available_timeslots(ENV['EVENT_MODULARITY'])
   end
 
   # POST /events or /events.json
   def create
     # Creates UserEvents for involved users in the event as well after checking request validity.
-    @timeslots_available = Event.get_available_timeslots
+    @timeslots_available = Event.get_available_timeslots(ENV['EVENT_MODULARITY'])
     @event = Event.new(event_params)
     
     respond_to do |format|
@@ -67,7 +67,7 @@ class EventsController < ApplicationController
   # PATCH/PUT /events/1 or /events/1.json
   def update
     # Creates UserEvents for involved users in the event as well after checking request validity.
-    @timeslots_available = Event.get_available_timeslots    
+    @timeslots_available = Event.get_available_timeslots(ENV['EVENT_MODULARITY'])    
     
     respond_to do |format|
       form_no_errors = Event.event_update(event_params, @event, current_user)

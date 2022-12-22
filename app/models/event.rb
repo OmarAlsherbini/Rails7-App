@@ -307,6 +307,62 @@ class Event < ApplicationRecord
     return eventData
   end
 
+  # Assume event_type = 1 and all_day = 0. Ex: Event.get_user_timeslots_start_time(1, 2, "15-12-2022", 5) ,Event.get_user_timeslots_start_time(1, 2, "15-12-2022", 5, false, "2022-12-15 16:30:00")
+  def self.get_user_timeslots_start_time(current_user_id, host_user_id, day_date, modularity, is_start=true, chosen_start_date=nil, is_overwritable=false)
+    
+
+    user_availability = ["Select Timeslot"]
+    n_timeslots_hour = 60/(modularity.to_i)
+    for i in 0...24*n_timeslots_hour do
+      conflict = false
+      
+      if is_start
+        start_date = "#{day_date} #{self.reformat_time(self.timeslot_to_time_str(i, modularity))}"
+        if i == 24*n_timeslots_hour-1
+          end_date = "#{day_date.to_date + 1.day} 00:00:00"
+        else
+          end_date = "#{day_date} #{self.reformat_time(self.timeslot_to_time_str(i+1, modularity))}"
+        end 
+      else
+        start_date = chosen_start_date
+        end_date = "#{day_date} #{self.reformat_time(self.timeslot_to_time_str(i+1, modularity))}"
+        if start_date.to_datetime >= end_date.to_datetime
+          next
+        end
+      end
+      
+
+      # Check event conflicts for the host user.
+      all_host_events = UserEvent.where(user_id: host_user_id)
+      for host_event in all_host_events
+        if is_start
+          if self.check_events_conflict(host_event.event.start_date, host_event.event.end_date, start_date.to_datetime, end_date.to_datetime, host_event.event.overwritable, is_overwritable)
+            conflict = true
+            break
+          end
+        end
+        
+      end
+
+      if !conflict
+        # Check event conflicts for the current user.
+        all_current_user_events = UserEvent.where(user_id: current_user_id)
+        for current_user_event in all_current_user_events
+          if self.check_events_conflict(current_user_event.event.start_date, current_user_event.event.end_date, start_date.to_datetime, end_date.to_datetime, current_user_event.event.overwritable, is_overwritable)
+            conflict = true
+            break
+          end
+        end
+      end
+
+      if !conflict
+        user_availability.append(self.timeslot_to_time_str(i, modularity))
+      end
+    end    
+    p "Available Timeslots Start-Time: #{user_availability}"
+    return user_availability
+  end
+
   def self.check_events_conflict(old_start_date, old_end_date, new_start_date, new_end_date, old_overwritable, new_overwritable)
     if !old_overwritable and !new_overwritable and ((old_start_date > new_start_date and old_start_date < new_end_date) or (old_end_date > new_start_date and old_end_date < new_end_date) or (old_start_date < new_start_date and old_end_date > new_end_date) or (old_start_date > new_start_date and old_end_date < new_end_date))
       return true
@@ -316,21 +372,23 @@ class Event < ApplicationRecord
   end
 
 
-  def self.get_available_timeslots
+  def self.get_available_timeslots(modularity)
     available_timeslots = ["Select Timeslot"]
-    for i in 0..95 do
+    n_timeslots_hour = 60/(modularity.to_i)
+    for i in 0...24*n_timeslots_hour do
       #time_str_arr = self.timeslot_to_time(i)
-      available_timeslots.append(self.timeslot_to_time_str(i))
+      available_timeslots.append(self.timeslot_to_time_str(i, modularity))
       #available_timeslots.append("#{time_str_arr[0]}:#{time_str_arr[1]} #{time_str_arr[2]}")
       #available_timeslots.append("#{hour_str}:#{minutes_str} #{am_pm}")
     end
-    p "Available Timeslots: #{available_timeslots}"
+    #p "Available Timeslots: #{available_timeslots}"
     return available_timeslots
   end
 
-  def self.timeslot_to_time_str(timeslot)
-    hour = (timeslot/4).to_i
-    minutes = (timeslot%4)*15
+  def self.timeslot_to_time_str(timeslot, modularity)
+    n_timeslots_hour = 60/(modularity.to_i)
+    hour = (timeslot/n_timeslots_hour).to_i
+    minutes = (timeslot%n_timeslots_hour)*(modularity.to_i)
     if hour < 1
       am_pm = "AM"
       hour_str = "12"
@@ -346,6 +404,8 @@ class Event < ApplicationRecord
     end
     if minutes == 0
       minutes_str = "00"
+    elsif minutes < 10
+      minutes_str = "0#{minutes}"
     else
       minutes_str = minutes.to_s
     end
