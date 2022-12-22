@@ -11,9 +11,9 @@ RSpec.describe Event, type: :model do
   Event.delete_all
 
   # Test Parameters
-  n_users = 10
-  n_user_events_min = 5
-  n_user_events_max = 50
+  n_users = 5
+  n_user_events_min = 200
+  n_user_events_max = 300
   t_event_factor_min = 1
   t_event_factor_max = 32
   month_range_next = 1
@@ -197,11 +197,11 @@ RSpec.describe Event, type: :model do
       start_day = "#{event_year}-#{event_month}-#{event_day}"
       end_day = "#{event_year}-#{event_month}-#{event_end_day}"      
       
-      event_timeslot = rand(0..95)
+      event_timeslot = rand(0...24*ENV['EVENT_MODULARITY'].to_i)
       event_duration_timeslots = rand(t_event_factor_min..t_event_factor_max)
-      event_end_timeslot = [95, event_duration_timeslots + event_timeslot].min
-      start_time = Event.timeslot_to_time_str(event_timeslot)
-      end_time = Event.timeslot_to_time_str(event_end_timeslot)
+      event_end_timeslot = [24*ENV['EVENT_MODULARITY'].to_i-1, event_duration_timeslots + event_timeslot].min
+      start_time = Event.timeslot_to_time_str(event_timeslot, ENV['EVENT_MODULARITY'])
+      end_time = Event.timeslot_to_time_str(event_end_timeslot, ENV['EVENT_MODULARITY'])
 
       end_before_start_roll = rand(0...end_before_start_chance_one_in) 
       if (end_before_start_roll == end_before_start_chance_one_in-1) # Swap start and end times => Error guaranteed
