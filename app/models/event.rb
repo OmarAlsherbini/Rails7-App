@@ -307,8 +307,8 @@ class Event < ApplicationRecord
     return eventData
   end
 
-  # Assume event_type = 1 and all_day = 0. Ex: Event.get_user_timeslots_start_time(1, 2, "15-12-2022", 5) ,Event.get_user_timeslots_start_time(1, 2, "15-12-2022", 5, false, "2022-12-15 16:30:00")
-  def self.get_user_timeslots_start_time(current_user_id, host_user_id, day_date, modularity, is_start=true, chosen_start_date=nil, is_overwritable=false)
+  # Assume event_type = 1 and all_day = 0. Ex: Event.get_user_timeslots(1, 2, "15-12-2022", 5) ,Event.get_user_timeslots(1, 2, "15-12-2022", 5, false, "2022-12-15 16:30:00")
+  def self.get_user_timeslots(current_user_id, host_user_id, day_date, modularity, is_start=true, chosen_start_date=nil, is_overwritable=false)
     
 
     user_availability = ["Select Timeslot"]
@@ -341,7 +341,8 @@ class Event < ApplicationRecord
             break
           end
         end
-        
+        #Event.check_events_conflict("2022-12-13 13:26:00".to_datetime, "2022-12-15 16:25:00".to_datetime, "2022-12-15 13:20:00".to_datetime, "2022-12-15 13:25:00".to_datetime, false, false) 
+        #Event.check_events_conflict("2022-12-13 13:26:00".to_datetime, "2022-12-15 16:25:00".to_datetime, "2022-12-15 16:20:00".to_datetime, "2022-12-15 16:25:00".to_datetime, false, false) 
       end
 
       if !conflict
@@ -364,7 +365,7 @@ class Event < ApplicationRecord
   end
 
   def self.check_events_conflict(old_start_date, old_end_date, new_start_date, new_end_date, old_overwritable, new_overwritable)
-    if !old_overwritable and !new_overwritable and ((old_start_date > new_start_date and old_start_date < new_end_date) or (old_end_date > new_start_date and old_end_date < new_end_date) or (old_start_date < new_start_date and old_end_date > new_end_date) or (old_start_date > new_start_date and old_end_date < new_end_date))
+    if !old_overwritable and !new_overwritable and ((old_start_date >= new_start_date and old_start_date < new_end_date) or (old_end_date > new_start_date and old_end_date <= new_end_date) or (old_start_date <= new_start_date and old_end_date >= new_end_date) or (old_start_date >= new_start_date and old_end_date <= new_end_date))
       return true
     else
       return false
